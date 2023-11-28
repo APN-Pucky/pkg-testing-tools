@@ -54,8 +54,12 @@ def filter_out_use_flags(flags):
     return new_flags
 
 
-def get_package_flags(cp):
-    flags = portage.db[portage.root]['porttree'].dbapi.aux_get(cp, ['IUSE', 'REQUIRED_USE'])
+def atom_to_cpv(atom):
+    return portage.db[portage.root]['porttree'].dbapi.match(atom)[0]
+
+
+def get_package_flags(cpv):
+    flags = portage.db[portage.root]['porttree'].dbapi.aux_get(cpv, ['IUSE', 'REQUIRED_USE'])
 
     use_flags = strip_use_flags(flags[0].split())
     use_flags = filter_out_use_flags(use_flags)

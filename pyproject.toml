@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "pkg-testing-tools"
+version = "0.2.0"
+description = "Packages testing tools for Gentoo"
+authors = ["Alexander Puck Neuwirth <alexander@neuwirth-informatik.de>", "Piotr Karbowski <piotr.karbowski@gmail.com>"]
+license = "BSD"
+readme = "README.md"
+packages = [{include = "pkg_testing_tools"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.scripts]
+pkg-testing-tool = "pkg_testing_tools.main:main"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

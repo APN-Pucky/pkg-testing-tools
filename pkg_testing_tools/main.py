@@ -10,7 +10,7 @@ import shlex
 
 import portage
 
-from .use import get_package_flags, get_use_combinations
+from .use import atom_to_cpv, get_package_flags, get_use_combinations
 
 
 def get_etc_portage_tmp_file(directory_name):
@@ -120,7 +120,7 @@ def edie(msg):
 
 
 def get_package_metadata(atom):
-    cpv = portage.dep.dep_getcpv(atom)
+    cpv = atom_to_cpv(atom)
 
     cp, version, revision = portage.versions.pkgsplit(cpv)
 
