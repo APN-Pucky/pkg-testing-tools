@@ -32,9 +32,9 @@ def filter_out_use_flags(flags):
         "l10n_",
         "kernel_",
         "abi_",
-        "python_target_",
-        "python_targets_",
-        "ruby_targets_",
+        # "python_target_",
+        # "python_targets_",
+        # "ruby_targets_",
         "cpu_flags_",
     )
 
