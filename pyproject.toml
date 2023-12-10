@@ -8,6 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+portage = "*"
 
 [tool.poetry.scripts]
 pkg-testing-tool = "pkg_testing_tools.main:main"
