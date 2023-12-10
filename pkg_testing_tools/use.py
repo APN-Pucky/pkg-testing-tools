@@ -70,10 +70,16 @@ def filter_out_use_flags(flags):
 
 
 def atom_to_cpv(atom):
+    """
+    Get the cpv for an atom.
+    """
     return portage.db[portage.root]["porttree"].dbapi.match(atom)[0]
 
 
 def get_package_flags(cpv):
+    """
+    Get the use flags and required use flags for a package.
+    """
     flags = portage.db[portage.root]["porttree"].dbapi.aux_get(
         cpv, ["IUSE", "REQUIRED_USE"]
     )

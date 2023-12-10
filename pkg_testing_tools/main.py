@@ -156,6 +156,10 @@ def einfo(msg):
     print("[INFO] >>> {}".format(msg))
 
 
+def edebug(msg):
+    print("[DEBUG] >>> {}".format(msg))
+
+
 def edie(msg):
     eerror(msg)
     sys.exit(1)
@@ -297,8 +301,8 @@ def define_jobs(atom, args):
     }
 
     if args.debug:
-        print("[DEBUG] >>> {}".format(common))
-        print("[DEBUG] >>> {}".format(package_metadata))
+        edebug("{}".format(common))
+        edebug("{}".format(package_metadata))
 
     if args.append_required_use:
         package_metadata["ruse"].append(args.append_required_use)
