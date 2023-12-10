@@ -1,0 +1,10 @@
+[MASTER]
+
+# Add other general configurations here
+
+[TYPECHECK]
+
+# Add other type-checking configurations here
+
+# Disable import-related checks for the 'portage' module
+ignored-modules=portage
