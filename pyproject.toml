@@ -13,7 +13,14 @@ portage = "*"
 [tool.poetry.scripts]
 pkg-testing-tool = "pkg_testing_tools.main:main"
 
+[tool.poetry.group.test.dependencies]
+pytest = "*"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+#testpaths = ["tests"]
+addopts = [ "-v", "--doctest-modules"]

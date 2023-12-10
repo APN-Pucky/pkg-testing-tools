@@ -6,10 +6,22 @@ import portage
 
 
 def iuse_match_always_true(flag):
+    """
+    Dummy function to pass to portage.dep.check_required_use().
+    """
     return True
 
 
 def strip_use_flags(flags):
+    """
+    Remove the leading + or - from use flags.
+
+    :param flags: list of use flags
+    :return: list of use flags without the leading + or -
+
+    >>> strip_use_flags(["-flag1", "+flag2", "flag3"])
+    ['flag1', 'flag2', 'flag3']
+    """
     stripped_flags = []
 
     for flag in flags:
@@ -22,6 +34,15 @@ def strip_use_flags(flags):
 
 
 def filter_out_use_flags(flags):
+    """
+    Remove use flags that we don't want to test.
+
+    :param flags: list of use flags
+    :return: list of use flags without the ones we don't want to test
+
+    >>> filter_out_use_flags(["flag1", "flag2", "debug"])
+    ['flag1', 'flag2']
+    """
     new_flags = []
 
     ignore_flags_with_prefix = (
@@ -67,6 +88,24 @@ def get_package_flags(cpv):
 
 
 def get_use_flags_toggles(index, iuse):
+    """
+    Toggle use flags based on the index.
+
+    :param index: index of the use flag combination
+    :param iuse: list of use flags
+    :return: list of use flags with the toggled flags
+
+    >>> get_use_flags_toggles(0, ["flag1", "flag2", "flag3"])
+    ['-flag1', '-flag2', '-flag3']
+    >>> get_use_flags_toggles(1, ["flag1", "flag2", "flag3"])
+    ['flag1', '-flag2', '-flag3']
+    >>> get_use_flags_toggles(2, ["flag1", "flag2", "flag3"])
+    ['-flag1', 'flag2', '-flag3']
+    >>> get_use_flags_toggles(3, ["flag1", "flag2", "flag3"])
+    ['flag1', 'flag2', '-flag3']
+    >>> get_use_flags_toggles(4, ["flag1", "flag2", "flag3"])
+    ['-flag1', '-flag2', 'flag3']
+    """
     on_off_switches = []
 
     for i in range(len(iuse)):
