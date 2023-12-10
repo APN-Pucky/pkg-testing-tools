@@ -110,6 +110,14 @@ def process_args():
     )
 
     optional.add_argument(
+        "--debug",
+        action="store_true",
+        required=False,
+        help="Enable debug output, like printing emerge command line.",
+        default=False,
+    )
+
+    optional.add_argument(
         "--extra-env-file",
         action="append",
         type=str,
@@ -287,6 +295,10 @@ def define_jobs(atom, args):
             " ".join(args.extra_env_file) if args.extra_env_file else []
         ),
     }
+
+    if args.debug:
+        print("[DEBUG] >>> {}".format(common))
+        print("[DEBUG] >>> {}".format(package_metadata))
 
     if args.append_required_use:
         package_metadata["ruse"].append(args.append_required_use)
