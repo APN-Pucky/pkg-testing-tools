@@ -105,6 +105,8 @@ def get_use_flags_toggles(index, iuse):
     ['flag1', 'flag2', '-flag3']
     >>> get_use_flags_toggles(4, ["flag1", "flag2", "flag3"])
     ['-flag1', '-flag2', 'flag3']
+    >>> get_use_flags_toggles(7, ["flag1", "flag2", "flag3"])
+    ['flag1', 'flag2', 'flag3']
     """
     on_off_switches = []
 
@@ -120,6 +122,22 @@ def get_use_flags_toggles(index, iuse):
 
 
 def get_use_combinations(iuse, ruse, max_use_combinations):
+    """
+    Iterate through all possible use flag combinations and return the ones that
+
+    :param iuse: list of use flags
+    :param ruse: list of required use flags
+    :param max_use_combinations: maximum number of use flag combinations to return
+    :return: list of valid use flag combinations
+
+    >>> get_use_combinations(["flag1", "flag2", "flag3"], ["flag1"], 999)
+    [['flag1', '-flag2', '-flag3'], ['flag1', 'flag2', '-flag3'], ['flag1', '-flag2', 'flag3'], ['flag1', 'flag2', 'flag3']]
+    >>> get_use_combinations(["flag1", "flag2", "flag3"], ["-flag1"], 999)
+    [['-flag1', '-flag2', '-flag3'], ['-flag1', 'flag2', '-flag3'], ['-flag1', '-flag2', 'flag3'], ['-flag1', 'flag2', 'flag3']]
+    >>> get_use_combinations(["flag1", "flag2", "flag3"], ["!flag1"], 999)
+    [['-flag1', '-flag2', '-flag3'], ['-flag1', 'flag2', '-flag3'], ['-flag1', '-flag2', 'flag3'], ['-flag1', 'flag2', 'flag3']]
+
+    """
     all_combinations_count = 2 ** len(iuse)
 
     valid_use_flags_combinations = []
