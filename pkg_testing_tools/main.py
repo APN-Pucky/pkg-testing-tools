@@ -175,15 +175,18 @@ def edie(msg):
 
 
 def get_package_metadata(atom):
-    # This handles live ebuilds properly, but not revisions: https://bugs.gentoo.org/918693 https://github.com/APN-Pucky/pkg-testing-tools/issues/10
-    cpv = portage.dep.dep_getcpv(atom)
-    edebug(f"cpv through dep_getcpv(): {cpv}")
-    cp, version, revision = portage.versions.pkgsplit(cpv)
-    if not "9999" in version:  # this is for odd live builds sci-physics/root-6.30.9999
-        # This handles revisions properly, but not live ebuilds: https://bugs.gentoo.org/918693 https://github.com/APN-Pucky/pkg-testing-tools/issues/10
-        cpv = atom_to_cpv(atom)
+    # This handles revisions properly, but not live ebuilds: https://bugs.gentoo.org/918693 https://github.com/APN-Pucky/pkg-testing-tools/issues/10
+    cpv = atom_to_cpv(atom)
+    # cpv is None on missing/masked packages
+    if cpv:
         edebug(f"cpv through match(): {cpv}")
-        cp, version, revision = portage.versions.pkgsplit(cpv)
+    else:
+        edebug(f"could not find unmasked package, assuming it is available")
+        # This handles live ebuilds properly, but not revisions: https://bugs.gentoo.org/918693 https://github.com/APN-Pucky/pkg-testing-tools/issues/10
+        cpv = portage.dep.dep_getcpv(atom)
+        edebug(f"cpv through dep_getcpv(): {cpv}")
+
+    cp, version, revision = portage.versions.pkgsplit(cpv)
 
     iuse, ruse = get_package_flags(cpv)
 
