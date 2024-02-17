@@ -73,7 +73,18 @@ def atom_to_cpv(atom):
     """
     Get the cpv for an atom.
     """
+    save = portage.db[portage.root]["porttree"].dbapi.settings["ACCEPT_KEYWORDS"]
+
+    portage.db[portage.root]["porttree"].dbapi.settings.unlock()
+    portage.db[portage.root]["porttree"].dbapi.settings["ACCEPT_KEYWORDS"] = "**"
+    portage.db[portage.root]["porttree"].dbapi.settings.lock()
+
     matched = portage.db[portage.root]["porttree"].dbapi.match(atom)
+
+    portage.db[portage.root]["porttree"].dbapi.settings.unlock()
+    portage.db[portage.root]["porttree"].dbapi.settings["ACCEPT_KEYWORDS"] = save
+    portage.db[portage.root]["porttree"].dbapi.settings.lock()
+
     if len(matched) == 0:
         return None
     return matched[0]
