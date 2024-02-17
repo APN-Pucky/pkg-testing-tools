@@ -47,3 +47,14 @@ pkg-testing-tool \
 Local to package atom flags are sometimes not desired, especially when one flag on package we test requires the same flag on it's dependencies. For this, one should switch to global flags, that work as if someone set the `$USE` environmental variable with them.
 ```
 pkg-testing-tool --use-flags-scope global --package-atom '=dev-libs/boost-1.71.0'
+
+## Poetry development
+
+As root:
+
+```
+$ poetry config virtualenvs.options.system-site-packages true
+$ poetry install
+$ poetry shell
+$ pkg-testing-tool --help
+```
