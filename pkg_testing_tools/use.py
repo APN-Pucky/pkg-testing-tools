@@ -76,7 +76,7 @@ def atom_to_cpv(atom):
     matched = portage.db[portage.root]["porttree"].dbapi.match(atom)
     if len(matched) == 0:
         # TODO raise for now, but better handling might be better :/
-        raise "Atom not found, typo?"
+        raise Exception("Atom not found, typo?")
     return matched[0]
 
 
