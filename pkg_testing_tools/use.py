@@ -73,10 +73,11 @@ def atom_to_cpv(atom):
     """
     Get the cpv for an atom.
     """
+
     matched = portage.db[portage.root]["porttree"].dbapi.match(atom)
+
     if len(matched) == 0:
-        # TODO raise for now, but better handling might be better :/
-        raise Exception("Atom '" + atom + "' not found, typo?")
+        return None
     return matched[0]
 
 
