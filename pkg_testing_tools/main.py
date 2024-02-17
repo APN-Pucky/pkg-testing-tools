@@ -13,8 +13,8 @@ import portage
 from .use import atom_to_cpv, get_package_flags, get_use_combinations
 
 
-def get_etc_portage_tmp_file(directory_name):
-    target_location = os.path.join("/etc/portage", directory_name)
+def get_etc_portage_tmp_file(directory_name, prefix):
+    target_location = os.path.join(prefix, "/etc/portage", directory_name)
 
     if not os.path.isdir(target_location):
         edie(
@@ -98,7 +98,7 @@ def process_args():
         required=False,
         default="once",
         choices=["once", "always", "never"],
-        help="Enables FEATURES='test' once, for default use flags, always, for every run or never. Default: once.",
+        help="Enables FEATURES='test' once, for default use flags, always, for every run or never. Default: 'once'.",
     )
 
     optional.add_argument(
@@ -107,6 +107,15 @@ def process_args():
         type=str,
         required=False,
         help="Save report in JSON format under specified path.",
+    )
+
+    optional.add_argument(
+        "--prefix",
+        action="store",
+        default="",
+        type=str,
+        required=False,
+        help="Set the prefix for the portage configuration files. Default: ''.",
     )
 
     optional.add_argument(
@@ -224,7 +233,7 @@ def run_testing(job, args):
 
         for directory in ["env", "package.env", "package.use"]:
             tmp_files[directory] = stack.enter_context(
-                get_etc_portage_tmp_file(directory)
+                get_etc_portage_tmp_file(directory, args.prefix)
             )
 
         tested_cpv_features = ["qa-unresolved-soname-deps", "multilib-strict"]
@@ -390,7 +399,7 @@ def pkg_testing_tool(args, extra_args):
 
         for directory in ["package.accept_keywords", "package.unmask"]:
             tmp_files[directory] = stack.enter_context(
-                get_etc_portage_tmp_file(directory)
+                get_etc_portage_tmp_file(directory, args.prefix)
             )
 
         jobs = []
