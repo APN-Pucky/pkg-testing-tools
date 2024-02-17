@@ -63,6 +63,17 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
+name = "portage"
+version = "3.0.61"
+description = "Portage is the package management and distribution system for Gentoo"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "portage-3.0.61-py3-none-any.whl", hash = "sha256:598e02b459b4191c439879e44f392078dba51b151fd525887065692dc7b37bd4"},
+    {file = "portage-3.0.61.tar.gz", hash = "sha256:eb92667069740e9edf3817d7b99527390150537a02106173f1cb383667012e60"},
+]
+
+[[package]]
 name = "pytest"
 version = "8.0.1"
 description = "pytest: simple powerful testing with Python"
@@ -95,10 +106,7 @@ files = [
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
 ]
 
-[extras]
-portage = []
-
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "d33361e9476e124f69dbc026ec8588b58a59be701bbfe8611fe3e4a235e74d39"
+content-hash = "476d2b5a346247d7c788d06491b0238583c1085aa3fce2e2abac10388a4dac0a"
