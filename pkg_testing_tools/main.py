@@ -181,7 +181,7 @@ def get_package_metadata(atom):
     if cpv:
         edebug(f"cpv through match(): {cpv}")
     else:
-        edebug(f"could not find unmasked package, assuming it is available")
+        edebug(f"could not find unmasked package {atom}, assuming it is available")
         # This handles live ebuilds properly, but not revisions: https://bugs.gentoo.org/918693 https://github.com/APN-Pucky/pkg-testing-tools/issues/10
         cpv = portage.dep.dep_getcpv(atom)
         edebug(f"cpv through dep_getcpv(): {cpv}")
