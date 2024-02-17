@@ -14,7 +14,7 @@ from .use import atom_to_cpv, get_package_flags, get_use_combinations
 
 
 def get_etc_portage_tmp_file(directory_name, prefix):
-    target_location = os.path.join(prefix, "/etc/portage", directory_name)
+    target_location = os.path.join(prefix + "/etc/portage", directory_name)
 
     if not os.path.isdir(target_location):
         edie(
@@ -153,7 +153,7 @@ def process_args():
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
-
+    edebug("{}".format(args))
     return args, extra_args
 
 
