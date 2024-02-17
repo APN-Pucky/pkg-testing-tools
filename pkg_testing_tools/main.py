@@ -418,11 +418,12 @@ def pkg_testing_tool(args, extra_args):
             tmp_files["package.accept_keywords"].write("{atom} **\n".format(atom=atom))
             tmp_files["package.unmask"].write("{atom}\n".format(atom=atom))
 
-            for new_job in define_jobs(atom, args):
-                jobs.append(new_job)
-
         for handler in tmp_files:
             tmp_files[handler].flush()
+
+        for atom in args.package_atom:
+            for new_job in define_jobs(atom, args):
+                jobs.append(new_job)
 
         padding = max(len(i["cpv"]) for i in jobs) + 3
 
