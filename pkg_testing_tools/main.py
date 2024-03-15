@@ -36,6 +36,7 @@ def process_args():
     parser = argparse.ArgumentParser()
 
     required = parser.add_argument_group("Required")
+
     required.add_argument(
         "-p",
         "--package-atom",
@@ -45,6 +46,14 @@ def process_args():
     )
 
     optional = parser.add_argument_group("Optional")
+
+    optional.add_argument(
+        "-C",
+        "--unmerge",
+        action="store_true",
+        required=False,
+        help="Explicit unmerge before each test install.",
+    )
 
     optional.add_argument(
         "--ask",
@@ -219,6 +228,12 @@ def run_testing(job, args):
         "--backtrack",
         "300",
     ]
+    unmerge_cmdline = [
+        "emerge",
+        "--rage-clean",
+        job["cp"],
+    ]
+
     if args.append_emerge:
         emerge_cmdline += shlex.split(args.append_emerge)
 
@@ -286,6 +301,9 @@ def run_testing(job, args):
                 )
             else:
                 env["FEATURES"] = " ".join(global_features)
+
+        if args.unmerge:
+            subprocess.run(unmerge_cmdline, env=env)
 
         emerge_result = subprocess.run(emerge_cmdline, env=env)
         print("")
