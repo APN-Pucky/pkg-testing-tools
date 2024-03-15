@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- -C/--unmerge flag
+
+## [0.2.2] - 2024-02-17
+
+### Added
+
+- prefix argument
+
+### Fixed
+
+- swap of job definition order and temporary unmask/keyword files
+
 ## [0.2.1] - 2023-12-10
 
 ### Added
