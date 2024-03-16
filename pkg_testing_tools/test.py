@@ -9,7 +9,7 @@ from contextlib import ExitStack
 
 import portage
 
-from .log import eerror
+from .log import edie, eerror
 from .tmp import get_etc_portage_tmp_file
 
 
@@ -45,8 +45,7 @@ def run_testing(job, args):
         if not portage.settings.get("CCACHE_DIR") or not portage.settings.get(
             "CCACHE_SIZE"
         ):
-            eerror("The CCACHE_DIR and/or CCACHE_SIZE is not set!")
-            sys.exit(1)
+            edie("The CCACHE_DIR and/or CCACHE_SIZE is not set!")
 
         global_features.append("ccache")
 

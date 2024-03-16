@@ -182,14 +182,23 @@ def pkg_testing_tool(args, extra_args):
                 get_etc_portage_tmp_file(directory, args.prefix)
             )
 
-        if args.repo:
+        for ebuild in args.file:
+            # test that file ends in ".ebuild"
+            if not ebuild.endswith(".ebuild"):
+                edie("File {} does not end with '.ebuild'.".format(ebuild))
+            repo = os.path.dirname(os.path.dirname(os.path.abspath(ebuild)))
             # read repo_name from repo profiles/repo_name
             repo_name = "zzzpkgtestingtool"
-            with open(os.path.join(args.repo, "profiles/repo_name"), "r") as f:
+            with open(os.path.join(repo, "profiles/repo_name"), "r") as f:
                 repo_name = f.read().strip()
             tmp_files["repos.conf"].write(
-                f"[{repo_name}]\npriority=9999\nlocation = {args.repo}\n"
+                f"[{repo_name}]\npriority=9999\nlocation = {repo}\n"
             )
+            # ebuild to category/package-X.Y.Z
+            # get parent directory name of ebuild
+            category = os.path.basename(os.path.dirname(os.path.abspath(ebuild)))
+            package_version = os.path.basename(ebuild).replace(".ebuild", "")
+            args.package_atom += ["=" + category + "/" + package_version]
 
         jobs = []
 
