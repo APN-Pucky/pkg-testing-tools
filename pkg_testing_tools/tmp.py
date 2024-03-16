@@ -1,11 +1,4 @@
-import argparse
-import datetime
-import json
 import os
-import shlex
-import subprocess
-import sys
-from contextlib import ExitStack
 from tempfile import NamedTemporaryFile
 
 from .log import edebug, edie, eerror, einfo

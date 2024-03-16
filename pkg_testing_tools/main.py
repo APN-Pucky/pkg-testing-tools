@@ -20,14 +20,23 @@ from .use import atom_to_cpv, get_package_flags, get_use_combinations
 def process_args():
     parser = argparse.ArgumentParser()
 
-    required = parser.add_argument_group("Required")
+    # required = parser.add_argument_group("Required")
+    group = parser.add_mutually_exclusive_group(required=True)
 
-    required.add_argument(
+    group.add_argument(
         "-p",
         "--package-atom",
         action="append",
         required=True,
         help="Valid Portage package atom, like '=app-category/foo-1.2.3'. Can be specified multiple times to unmask/keyword all of them and test them one by one.",
+    )
+
+    group.add_argument(
+        "-f",
+        "--file",
+        action="append",
+        required=True,
+        help="Portage ebuild file like 'foo-1.2.3.ebuild'. Must reside in a repository.",
     )
 
     optional = parser.add_argument_group("Optional")
