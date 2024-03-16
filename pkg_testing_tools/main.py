@@ -1,20 +1,16 @@
+#!/usr/bin/env python3
+
 import argparse
-import datetime
 import json
 import os
-import shlex
 import subprocess
 import sys
 from contextlib import ExitStack
-from tempfile import NamedTemporaryFile
 
-import portage
-
-from .job import define_jobs, get_package_metadata
+from .job import define_jobs
 from .log import edebug, edie, eerror, einfo
 from .test import run_testing
 from .tmp import get_etc_portage_tmp_file
-from .use import atom_to_cpv, get_package_flags, get_use_combinations
 
 
 def process_args():
@@ -27,7 +23,7 @@ def process_args():
         "-p",
         "--package-atom",
         action="append",
-        required=True,
+        default=[],
         help="Valid Portage package atom, like '=app-category/foo-1.2.3'. Can be specified multiple times to unmask/keyword all of them and test them one by one.",
     )
 
@@ -35,7 +31,6 @@ def process_args():
         "-f",
         "--file",
         action="append",
-        required=True,
         help="Portage ebuild file like 'foo-1.2.3.ebuild'. Must reside in a repository.",
     )
 
@@ -186,7 +181,9 @@ def pkg_testing_tool(args, extra_args):
             # test that file ends in ".ebuild"
             if not ebuild.endswith(".ebuild"):
                 edie("File {} does not end with '.ebuild'.".format(ebuild))
-            repo = os.path.dirname(os.path.dirname(os.path.abspath(ebuild)))
+            repo = os.path.dirname(
+                os.path.dirname(os.path.dirname(os.path.abspath(ebuild)))
+            )
             # read repo_name from repo profiles/repo_name
             repo_name = "zzzpkgtestingtool"
             with open(os.path.join(repo, "profiles/repo_name"), "r") as f:
@@ -196,9 +193,13 @@ def pkg_testing_tool(args, extra_args):
             )
             # ebuild to category/package-X.Y.Z
             # get parent directory name of ebuild
-            category = os.path.basename(os.path.dirname(os.path.abspath(ebuild)))
+            category = os.path.basename(
+                os.path.dirname(os.path.dirname(os.path.abspath(ebuild)))
+            )
             package_version = os.path.basename(ebuild).replace(".ebuild", "")
             args.package_atom += ["=" + category + "/" + package_version]
+            # make sure we have the right manifest already
+            subprocess.run(["ebuild", ebuild, "manifest"])
 
         jobs = []
 
@@ -282,3 +283,7 @@ def pkg_testing_tool(args, extra_args):
 def main():
     args, extra_args = process_args()
     pkg_testing_tool(args, extra_args)
+
+
+if __name__ == "__main__":
+    main()
