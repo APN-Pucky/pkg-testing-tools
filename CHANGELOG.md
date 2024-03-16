@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- -C/--unmerge flag
+- -C/--unmerge flag: unmerge package before each test
+- -f/--file flag: read from ebuild file and temporary inject its hosting repository
 
 ## [0.2.2] - 2024-02-17
 
