@@ -199,7 +199,7 @@ def pkg_testing_tool(args, extra_args):
                 os.path.dirname(os.path.dirname(os.path.abspath(ebuild)))
             )
             package_version = os.path.basename(ebuild).replace(".ebuild", "")
-            args.package_atom += ["=" + category + "/" + package_version]
+            args.package_atom += ["=" + category + "/" + package_version + "::" + repo_name]
             # make sure we have the right manifest already
             if args.debug:
                 edebug(f"ebuild {ebuild} manifest")
