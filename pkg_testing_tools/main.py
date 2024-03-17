@@ -31,6 +31,7 @@ def process_args():
         "-f",
         "--file",
         action="append",
+        default=[],
         help="Portage ebuild file like 'foo-1.2.3.ebuild'. Must reside in a repository.",
     )
 
