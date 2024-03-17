@@ -152,7 +152,8 @@ def process_args():
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
-    edebug("{}".format(args))
+    if args.debug:
+        edebug("{}".format(args))
     return args, extra_args
 
 
@@ -200,6 +201,8 @@ def pkg_testing_tool(args, extra_args):
             package_version = os.path.basename(ebuild).replace(".ebuild", "")
             args.package_atom += ["=" + category + "/" + package_version]
             # make sure we have the right manifest already
+            if args.debug:
+                edebug(f"ebuild {ebuild} manifest")
             subprocess.run(["ebuild", ebuild, "manifest"])
 
         jobs = []
