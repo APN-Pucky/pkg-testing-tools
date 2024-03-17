@@ -179,6 +179,7 @@ def pkg_testing_tool(args, extra_args):
                 get_etc_portage_tmp_file(directory, args.prefix)
             )
 
+        repos = []
         for ebuild in args.file:
             # test that file ends in ".ebuild"
             if not ebuild.endswith(".ebuild"):
@@ -190,9 +191,12 @@ def pkg_testing_tool(args, extra_args):
             repo_name = "zzzpkgtestingtool"
             with open(os.path.join(repo, "profiles/repo_name"), "r") as f:
                 repo_name = f.read().strip()
-            tmp_files["repos.conf"].write(
-                f"[{repo_name}]\npriority=9999\nlocation = {repo}\n"
-            )
+            # only add repo once
+            if repo not in repos:
+                repos += [repo]
+                tmp_files["repos.conf"].write(
+                    f"[{repo_name}]\npriority=9999\nlocation = {repo}\n"
+                )
             # ebuild to category/package-X.Y.Z
             # get parent directory name of ebuild
             category = os.path.basename(
