@@ -192,8 +192,8 @@ def pkg_testing_tool(args, extra_args):
             with open(os.path.join(repo, "profiles/repo_name"), "r") as f:
                 repo_name = f.read().strip()
             # only add repo once
-            if repo not in repos:
-                repos += [repo]
+            if repo_name not in repos:
+                repos += [repo_name]
                 tmp_files["repos.conf"].write(
                     f"[{repo_name}]\npriority=9999\nlocation = {repo}\n"
                 )
@@ -203,7 +203,9 @@ def pkg_testing_tool(args, extra_args):
                 os.path.dirname(os.path.dirname(os.path.abspath(ebuild)))
             )
             package_version = os.path.basename(ebuild).replace(".ebuild", "")
-            args.package_atom += ["=" + category + "/" + package_version + "::" + repo_name]
+            args.package_atom += [
+                "=" + category + "/" + package_version + "::" + repo_name
+            ]
             # make sure we have the right manifest already
             if args.debug:
                 edebug(f"ebuild {ebuild} manifest")
