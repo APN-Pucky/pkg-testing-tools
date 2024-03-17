@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.4] - 2024-03-16
+
+### Fixed
+
+- temporary repositories are only injected once
+- passing no -f should not crash
+
+### Changed
+
+- `--file` also appends `::tmp{repo}` to the package atom
+
 ## [0.2.3] - 2024-03-16
 
 ### Added
@@ -42,7 +53,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - cpv matching for '~category/package-version' works now
 
-[unreleased]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.3...HEAD
+[unreleased]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.4...HEAD
+[0.2.4]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.2...0.2.3
 [0.2.2]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.0...0.2.1
