@@ -49,6 +49,7 @@ def define_jobs(atom, args):
 
     package_metadata = get_package_metadata(atom)
 
+
     common = {
         "cpv": atom,
         "cp": package_metadata["cp"],
