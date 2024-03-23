@@ -49,6 +49,7 @@ def define_jobs(atom, args):
 
     package_metadata = get_package_metadata(atom)
 
+
     common = {
         "cpv": atom,
         "cp": package_metadata["cp"],
@@ -58,8 +59,8 @@ def define_jobs(atom, args):
     }
 
     if args.debug:
-        edebug("{}".format(common))
-        edebug("{}".format(package_metadata))
+        edebug("common: {}".format(common))
+        edebug("package_metadata: {}".format(package_metadata))
 
     if args.append_required_use:
         package_metadata["ruse"].append(args.append_required_use)
