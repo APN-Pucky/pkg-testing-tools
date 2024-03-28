@@ -54,6 +54,7 @@ def process_args():
 
     optional.add_argument(
         "--pretend",
+        "--dry-run",
         action="store_true",
         required=False,
         help="Do not execute the tests.",
