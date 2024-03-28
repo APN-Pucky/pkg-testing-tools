@@ -49,7 +49,6 @@ def define_jobs(atom, args):
 
     package_metadata = get_package_metadata(atom)
 
-
     common = {
         "cpv": atom,
         "cp": package_metadata["cp"],
@@ -75,7 +74,9 @@ def define_jobs(atom, args):
         use_combinations = None
 
     if use_combinations:
-        if (package_metadata["has_tests"] and args.test_feature_scope == "always") or args.test_feature_scope == "force":
+        if (
+            package_metadata["has_tests"] and args.test_feature_scope == "always"
+        ) or args.test_feature_scope == "force":
             test_feature_toggle = True
         else:
             test_feature_toggle = False
