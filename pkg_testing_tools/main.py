@@ -53,6 +53,13 @@ def process_args():
     )
 
     optional.add_argument(
+        "--pretend",
+        action="store_true",
+        required=False,
+        help="Do not execute the tests.",
+    )
+
+    optional.add_argument(
         "--binpkg",
         action="store_true",
         required=False,

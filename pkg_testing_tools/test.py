@@ -101,15 +101,17 @@ def run_testing(job, args):
             else:
                 env["FEATURES"] = " ".join(global_features)
 
-        if args.unmerge:
+        if args.unmerge and not args.pretend:
             subprocess.run(unmerge_cmdline, env=env)
 
-        emerge_result = subprocess.run(emerge_cmdline, env=env)
+        emerge_result = None
+        if not args.pretend:
+            emerge_result = subprocess.run(emerge_cmdline, env=env)
         print("")
 
     return {
         "use_flags": " ".join(job["use_flags"]),
-        "exit_code": emerge_result.returncode,
+        "exit_code": 0 if emerge_result is None else emerge_result.returncode,
         "features": portage.settings.get("FEATURES"),
         "emerge_default_opts": portage.settings.get("EMERGE_DEFAULT_OPTS"),
         "emerge_cmdline": " ".join(emerge_cmdline),
