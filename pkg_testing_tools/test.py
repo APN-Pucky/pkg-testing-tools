@@ -93,6 +93,12 @@ def run_testing(job, args):
 
         env = os.environ.copy()
 
+        if args.unmerge and not args.pretend:
+            subprocess.run(unmerge_cmdline, env=env)
+
+        if args.test_feature_scope == "force":
+            env["EBUILD_FORCE_TEST"] = "1"
+
         if global_features:
             if "FEATURES" in env:
                 env["FEATURES"] = "{} {}".format(
@@ -101,8 +107,6 @@ def run_testing(job, args):
             else:
                 env["FEATURES"] = " ".join(global_features)
 
-        if args.unmerge and not args.pretend:
-            subprocess.run(unmerge_cmdline, env=env)
 
         emerge_result = None
         if not args.pretend:
