@@ -93,6 +93,12 @@ def run_testing(job, args):
 
         env = os.environ.copy()
 
+        if args.unmerge and not args.pretend:
+            subprocess.run(unmerge_cmdline, env=env)
+
+        if args.test_feature_scope == "force":
+            env["EBUILD_FORCE_TEST"] = "1"
+
         if global_features:
             if "FEATURES" in env:
                 env["FEATURES"] = "{} {}".format(
@@ -101,15 +107,14 @@ def run_testing(job, args):
             else:
                 env["FEATURES"] = " ".join(global_features)
 
-        if args.unmerge:
-            subprocess.run(unmerge_cmdline, env=env)
-
-        emerge_result = subprocess.run(emerge_cmdline, env=env)
+        emerge_result = None
+        if not args.pretend:
+            emerge_result = subprocess.run(emerge_cmdline, env=env)
         print("")
 
     return {
         "use_flags": " ".join(job["use_flags"]),
-        "exit_code": emerge_result.returncode,
+        "exit_code": 0 if emerge_result is None else emerge_result.returncode,
         "features": portage.settings.get("FEATURES"),
         "emerge_default_opts": portage.settings.get("EMERGE_DEFAULT_OPTS"),
         "emerge_cmdline": " ".join(emerge_cmdline),

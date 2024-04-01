@@ -53,6 +53,14 @@ def process_args():
     )
 
     optional.add_argument(
+        "--pretend",
+        "--dry-run",
+        action="store_true",
+        required=False,
+        help="Do not execute the tests.",
+    )
+
+    optional.add_argument(
         "--binpkg",
         action="store_true",
         required=False,
@@ -96,8 +104,8 @@ def process_args():
         type=str,
         required=False,
         default="once",
-        choices=["once", "always", "never"],
-        help="Enables FEATURES='test' once, for default use flags, always, for every run or never. Default: 'once'.",
+        choices=["once", "always", "force", "never"],
+        help="Enables FEATURES='test' once, for default use flags, always, for every run or never. force also sets EBUILD_FORCE_TEST=1. Default: 'once'.",
     )
 
     optional.add_argument(

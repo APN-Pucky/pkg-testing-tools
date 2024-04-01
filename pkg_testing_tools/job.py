@@ -58,8 +58,8 @@ def define_jobs(atom, args):
     }
 
     if args.debug:
-        edebug("{}".format(common))
-        edebug("{}".format(package_metadata))
+        edebug("common: {}".format(common))
+        edebug("package_metadata: {}".format(package_metadata))
 
     if args.append_required_use:
         package_metadata["ruse"].append(args.append_required_use)
@@ -74,7 +74,9 @@ def define_jobs(atom, args):
         use_combinations = None
 
     if use_combinations:
-        if package_metadata["has_tests"] and args.test_feature_scope == "always":
+        if (
+            package_metadata["has_tests"] and args.test_feature_scope == "always"
+        ) or args.test_feature_scope == "force":
             test_feature_toggle = True
         else:
             test_feature_toggle = False

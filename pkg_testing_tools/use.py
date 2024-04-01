@@ -4,6 +4,8 @@ import random
 
 import portage
 
+from pkg_testing_tools.log import edebug
+
 
 def iuse_match_always_true(flag):
     """
@@ -88,7 +90,6 @@ def get_package_flags(cpv):
     flags = portage.db[portage.root]["porttree"].dbapi.aux_get(
         cpv, ["IUSE", "REQUIRED_USE"]
     )
-
     use_flags = strip_use_flags(flags[0].split())
     use_flags = filter_out_use_flags(use_flags)
     use_flags = sorted(use_flags)
