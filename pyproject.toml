@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pkg-testing-tools"
-version = "0.2.3"
+version = "0.2.4"
 description = "Packages testing tools for Gentoo"
 authors = ["Alexander Puck Neuwirth <alexander@neuwirth-informatik.de>", "Piotr Karbowski <piotr.karbowski@gmail.com>"]
 license = "BSD"
