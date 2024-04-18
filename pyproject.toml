@@ -23,7 +23,6 @@ optional = true
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
-pytest-timeout = "*"
 
 [build-system]
 requires = ["poetry-core"]
