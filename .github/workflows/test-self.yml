@@ -16,6 +16,7 @@ jobs:
           '-C -p "=pkg-testing-tools-9999"',
           '-f /var/db/repos/gentoo/app-portage/pkg-testing-tools/pkg-testing-tools-9999.ebuild',
           '-p =pkg-testing-tools-9999',
+          # https://github.com/APN-Pucky/pkg-testing-tools/issues/28
           "--test-feature-scope never --append-required-use '!pgo' --max-use-combinations 6 -p www-client/firefox --pretend",
         ]
     steps:
