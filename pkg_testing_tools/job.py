@@ -49,7 +49,6 @@ def define_jobs(atom, args):
 
     package_metadata = get_package_metadata(atom)
 
-
     common = {
         "cpv": atom,
         "cp": package_metadata["cp"],
@@ -111,7 +110,8 @@ def define_jobs(atom, args):
             job.update(common)
             job.update(
                 {
-                    "test_feature_toggle": False,
+                    # This is effectively false
+                    "test_feature_toggle": args.test_feature_scope == "force",
                     "use_flags": [],
                     "use_flags_scope": args.use_flags_scope,
                 }
