@@ -16,12 +16,13 @@ jobs:
         args: [
           '-C -p "=pkg-testing-tools-9999" --pretend',
           '-C -p "=pkg-testing-tools-9999"',
-          '-f gentoo-hep-forge/sci-physics/hepi/hepi-0.2.10.ebuild',
+          '-f gentoo-hep-forge/sci-physics/hepi/hepi-0.2.10.ebuild --append-emerge "--autounmask=y --autounmask-write --autounmask-continue --autounmask-use=y"',
           '-p =pkg-testing-tools-9999',
           # https://github.com/APN-Pucky/pkg-testing-tools/issues/28
           "--test-feature-scope never --append-required-use '!pgo' --max-use-combinations 6 -p www-client/firefox --pretend",
           # https://bugs.gentoo.org/918693 an ebuild without -r0 but any other -rN
-          "-p '~sci-physics/lhapdf-6.3.0'"
+          "-p '~sci-physics/lhapdf-6.3.0' --max-use-combinations 0",
+          "-p '~sci-physics/lhapdf-6.3.0' --max-use-combinations 1 --pretend"
         ]
     steps:
     - run: emerge --sync

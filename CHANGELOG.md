@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+### Changed
+
+- `--max-use-combinations 1` is now one random use flag set instead of the default. The default is still availbale with `--max-use-combinations 0`
+
 ## [0.2.4] - 2024-03-16
 
 ### Fixed
