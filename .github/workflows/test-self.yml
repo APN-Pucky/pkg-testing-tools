@@ -16,7 +16,7 @@ jobs:
         args: [
           '-C -p "=pkg-testing-tools-9999" --pretend',
           '-C -p "=pkg-testing-tools-9999"',
-          '-f gentoo-hep-forge/sci-physics/hepi/hepi-0.2.10.ebuild --append-emerge "--autounmask=y --autounmask-write --autounmask-continue --autounmask-use=y"',
+          '-f sci/sci-physics/particle/particle-0.23.1.ebuild --append-emerge "--autounmask=y --autounmask-write --autounmask-continue --autounmask-use=y"',
           '-p =pkg-testing-tools-9999',
           # https://github.com/APN-Pucky/pkg-testing-tools/issues/28
           "--test-feature-scope never --append-required-use '!pgo' --max-use-combinations 6 -p www-client/firefox --pretend",
@@ -26,7 +26,7 @@ jobs:
         ]
     steps:
     - run: emerge --sync
-    - run: git clone --depth 1 https://gitlab.com/APN-Pucky/gentoo-hep-forge.git
+    - run: git clone --depth 1 https://github.com/gentoo/sci.git
     - run: echo 'app-portage/pkg-testing-tools **' > /etc/portage/package.accept_keywords/pkg-testing-tools
     - run: echo "EGIT_COMMIT=${{ github.sha }}" >> /var/db/repos/gentoo/app-portage/pkg-testing-tools/pkg-testing-tools-9999.ebuild
     - run: echo "EGIT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> /var/db/repos/gentoo/app-portage/pkg-testing-tools/pkg-testing-tools-9999.ebuild
