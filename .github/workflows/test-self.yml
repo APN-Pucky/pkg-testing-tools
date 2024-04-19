@@ -16,7 +16,7 @@ jobs:
         args: [
           '-C -p "=pkg-testing-tools-9999" --pretend',
           '-C -p "=pkg-testing-tools-9999"',
-          '-f sci/sci-physics/particle/particle-0.23.1.ebuild --append-emerge "--autounmask=y --autounmask-write --autounmask-continue --autounmask-use=y" --max-use-combinations 1',
+          '-f sci/sci-physics/collier/collier-*.ebuild --append-emerge "--autounmask=y --autounmask-write --autounmask-continue --autounmask-use=y" --max-use-combinations 1',
           '-p =pkg-testing-tools-9999',
           # https://github.com/APN-Pucky/pkg-testing-tools/issues/28
           "--test-feature-scope never --append-required-use '!pgo' --max-use-combinations 6 -p www-client/firefox --pretend",
