@@ -18,8 +18,8 @@ jobs:
           '-p =pkg-testing-tools-9999',
           # https://github.com/APN-Pucky/pkg-testing-tools/issues/28
           "--test-feature-scope never --append-required-use '!pgo' --max-use-combinations 6 -p www-client/firefox --pretend",
-          # https://bugs.gentoo.org/918693
-          "-p '~sci-physics/looptools-2.16'"
+          # https://bugs.gentoo.org/918693 an ebuild without -r0 but any other -rN
+          "-p '~sci-physics/lhapdf-6.3.0'"
         ]
     steps:
     - run: emerge --sync
