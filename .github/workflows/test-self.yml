@@ -16,7 +16,7 @@ jobs:
         args: [
           '-C -p "=pkg-testing-tools-9999" --pretend',
           '-C -p "=pkg-testing-tools-9999"',
-          '-f gentoo-hep-forge/sci-physics/hepi-0.2.10.ebuild',
+          '-f gentoo-hep-forge/sci-physics/hepi/hepi-0.2.10.ebuild',
           '-p =pkg-testing-tools-9999',
           # https://github.com/APN-Pucky/pkg-testing-tools/issues/28
           "--test-feature-scope never --append-required-use '!pgo' --max-use-combinations 6 -p www-client/firefox --pretend",
