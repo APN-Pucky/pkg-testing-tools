@@ -3,6 +3,8 @@ name: test self
 on:
   push:
     branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -12,12 +14,20 @@ jobs:
       fail-fast: false
       matrix:
         args: [
+          '-C -p "=pkg-testing-tools-9999" --pretend',
           '-C -p "=pkg-testing-tools-9999"',
-          '-f /var/db/repos/gentoo/app-portage/pkg-testing-tools/pkg-testing-tools-9999.ebuild',
+          '-f sci/sci-physics/collier/collier-*.ebuild --append-emerge "--autounmask=y --autounmask-write --autounmask-continue --autounmask-use=y" --max-use-combinations 1',
           '-p =pkg-testing-tools-9999',
+          # https://github.com/APN-Pucky/pkg-testing-tools/issues/28
+          "--test-feature-scope never --append-required-use '!pgo' --max-use-combinations 6 -p www-client/firefox --pretend",
+          # https://bugs.gentoo.org/918693 an ebuild without -r0 but any other -rN
+          "-p '~sci-physics/lhapdf-6.3.0' --max-use-combinations 0",
         ]
     steps:
     - run: emerge --sync
+    - run: git clone --depth 1 https://github.com/gentoo/sci.git
     - run: echo 'app-portage/pkg-testing-tools **' > /etc/portage/package.accept_keywords/pkg-testing-tools
+    - run: echo "EGIT_COMMIT=${{ github.sha }}" >> /var/db/repos/gentoo/app-portage/pkg-testing-tools/pkg-testing-tools-9999.ebuild
+    - run: echo "EGIT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> /var/db/repos/gentoo/app-portage/pkg-testing-tools/pkg-testing-tools-9999.ebuild
     - run: emerge =pkg-testing-tools-9999
     - run: pkg-testing-tool ${{ matrix.args }}

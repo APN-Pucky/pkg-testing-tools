@@ -13,7 +13,7 @@ from .test import run_testing
 from .tmp import get_etc_portage_tmp_file
 
 
-def process_args():
+def process_args(sysargs):
     parser = argparse.ArgumentParser()
 
     # required = parser.add_argument_group("Required")
@@ -149,7 +149,7 @@ def process_args():
         help="Append flags or parameters to the actual emerge call.",
     )
 
-    args, extra_args = parser.parse_known_args()
+    args, extra_args = parser.parse_known_args(sysargs)
     if extra_args:
         if extra_args[0] != "--":
             parser.error(
@@ -157,7 +157,7 @@ def process_args():
             )
         extra_args.remove("--")
 
-    if len(sys.argv) == 1:
+    if len(sysargs) == 0:
         parser.print_help(sys.stderr)
         sys.exit(1)
     if args.debug:
@@ -298,9 +298,13 @@ def pkg_testing_tool(args, extra_args):
         einfo("All good.")
 
 
-def main():
-    args, extra_args = process_args()
+def run(sysargs):
+    args, extra_args = process_args(sysargs)
     pkg_testing_tool(args, extra_args)
+
+
+def main():
+    run(sys.argv[1:])
 
 
 if __name__ == "__main__":
