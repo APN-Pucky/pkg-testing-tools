@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.5] - 2024-04-19
 
 ### Added
 
 - --pretend flag: only show the commands that would be executed
-- --test-feature-scope=force also sets EBUILD_FORCE_TEST=1
+- --test-feature-scope=force also sets `EBUILD_FORCE_TEST=1`
 
 ### Changed
 
