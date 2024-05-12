@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- --fail-fast flag: stop testing after the first failure
+
 ## [0.2.5] - 2024-04-19
 
 ### Added

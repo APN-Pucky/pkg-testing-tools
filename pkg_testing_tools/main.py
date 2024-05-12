@@ -46,6 +46,13 @@ def process_args(sysargs):
     )
 
     optional.add_argument(
+        "--fail-fast",
+        action="store_true",
+        required=False,
+        help="Exit on first failure. Useful to inspect fail logs. Default: False.",
+    )
+
+    optional.add_argument(
         "--ask",
         action="store_true",
         required=False,
@@ -275,6 +282,9 @@ def pkg_testing_tool(args, extra_args):
                 )
             )
             results.append(run_testing(job, args))
+            if args.fail_fast and results[-1]["exit_code"] != 0:
+                eerror("Exiting due to --fail-fast.")
+                break
 
     failures = []
     for item in results:
