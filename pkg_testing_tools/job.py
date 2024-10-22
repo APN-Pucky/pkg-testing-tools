@@ -70,9 +70,11 @@ def define_jobs(atom, args):
             package_metadata["ruse"],
             args.max_use_combinations,
         )
-        edebug("Use flags found for {}: {}".format(atom, use_combinations))
+        if args.debug:
+            edebug("Use flags found for {}: {}".format(atom, use_combinations))
     else:
-        edebug("No use flags found for {}".format(atom))
+        if args.debug:
+            edebug("No use flags found for {}".format(atom))
         use_combinations = None
 
     if use_combinations:
