@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - --fail-fast flag: stop testing after the first failure
+- `--max-use-combinations -1` to test all possible use flag combinations
 
 ## [0.2.5] - 2024-04-19
 
@@ -20,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `--max-use-combinations 1` is now one random use flag set instead of the default. The default is still availbale with `--max-use-combinations 0`
+- `--max-use-combinations 1` is now one random use flag set instead of the default. The default is still available with `--max-use-combinations 0`
 
 ## [0.2.4] - 2024-03-16
 

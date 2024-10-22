@@ -154,7 +154,7 @@ def get_use_combinations(iuse, ruse, max_use_combinations):
 
     valid_use_flags_combinations = []
 
-    if all_combinations_count > max_use_combinations:
+    if max_use_combinations >= 0 and all_combinations_count > max_use_combinations:
         random.seed()
         checked_combinations = set()
 
