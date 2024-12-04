@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.6] - 2024-12-04
+
 ### Added
 
+- "perl_features_" prefix added to ignored USE flags  
 - --fail-fast flag: stop testing after the first failure
 - `--max-use-combinations -1` to test all possible use flag combinations
 
