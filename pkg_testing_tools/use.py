@@ -48,17 +48,18 @@ def filter_out_use_flags(flags):
     new_flags = []
 
     ignore_flags_with_prefix = (
-        "elibc_",
-        "eglibc_",
-        "video_cards_",
-        "linguas_",
-        "l10n_",
-        "kernel_",
         "abi_",
+        "cpu_flags_",
+        "eglibc_",
+        "elibc_",
+        "kernel_",
+        "l10n_",
+        "linguas_",
+        "perl_features_",
         # "python_target_",
         # "python_targets_",
         # "ruby_targets_",
-        "cpu_flags_",
+        "video_cards_",
     )
 
     ignore_flags = set(["debug", "doc", "test", "selinux", "split-usr", "pic"])
