@@ -124,12 +124,12 @@ def define_jobs(atom, args):
         else:
             job = {}
             job.update(common)
-            job.update({"test_feature_toggle": False, "use_flags": []})
+            job.update({"test_feature_toggle": True, "use_flags": []})
             jobs.append(job)
 
             job = {}
             job.update(common)
-            job.update({"test_feature_toggle": True, "use_flags": []})
+            job.update({"test_feature_toggle": False, "use_flags": []})
             jobs.append(job)
 
     return jobs

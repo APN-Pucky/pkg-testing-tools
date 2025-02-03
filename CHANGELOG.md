@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--slow` flag: to run a single thread job
 
 
+### Changed
+
+- Do test run before non-test runs.
+
+
 ## [0.2.6] - 2024-12-04
 
 ### Added
