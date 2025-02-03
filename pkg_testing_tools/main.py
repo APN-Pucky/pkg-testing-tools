@@ -124,6 +124,15 @@ def process_args(sysargs):
     )
 
     optional.add_argument(
+        "--slow",
+        action="store_true",
+        required=False,
+        help="Run tests in slow mode, which takes more time.",
+        default=False,
+        type=bool,
+    )
+
+    optional.add_argument(
         "--prefix",
         action="store",
         default="",

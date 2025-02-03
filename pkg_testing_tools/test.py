@@ -41,6 +41,10 @@ def run_testing(job, args):
         emerge_cmdline.append("--usepkg")
         global_features.append("buildpkg")
 
+    if args.slow:
+        emerge_cmdline.append("--jobs=1")
+        global_features.append("-distcc")
+
     if args.ccache:
         if not portage.settings.get("CCACHE_DIR") or not portage.settings.get(
             "CCACHE_SIZE"
@@ -98,6 +102,9 @@ def run_testing(job, args):
 
         if args.test_feature_scope == "force":
             env["EBUILD_FORCE_TEST"] = "1"
+
+        if args.slow:
+            env["MAKEOPTS"] = "-j1 -l1"
 
         if global_features:
             if "FEATURES" in env:
