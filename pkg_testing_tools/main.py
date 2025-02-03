@@ -129,7 +129,6 @@ def process_args(sysargs):
         required=False,
         help="Run tests in slow mode, which takes more time.",
         default=False,
-        type=bool,
     )
 
     optional.add_argument(
