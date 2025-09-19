@@ -61,3 +61,32 @@ $ pkg-testing-tool --help
 ```
 
 Then, changes to pkg-testing-tools source code become immediately active.
+
+## Example test.conf
+
+Based on https://wiki.gentoo.org/wiki/Package_testing but with LTO checks.
+
+```txt
+COMMON_FLAGS="-O2 -pipe -frecord-gcc-switches -flto -Werror=odr -Werror=lto-type-mismatch -Werror=strict-aliasing"
+CFLAGS="${COMMON_FLAGS}"
+CXXFLAGS="${COMMON_FLAGS}"
+FCFLAGS="${COMMON_FLAGS}"
+FFLAGS="${COMMON_FLAGS}"
+LDFLAGS="${LDFLAGS} -Wl,--defsym=__gentoo_check_ldflags__=0"
+
+FEATURES="collision-protect ipc-sandbox network-sandbox sandbox split-log split-elog strict test userfetch userpriv usersandbox -parallel-install -getbinpkg"
+
+PORTAGE_ELOG_CLASSES="log warn error qa"
+PORTAGE_ELOG_SYSTEM="echo save"
+
+DISTUTILS_STRICT_ENTRY_POINTS=1
+
+ALLOW_TEST="network"
+
+IWDT_ALL=y
+
+QA_CMP=y
+QA_CMP_ARGS="-xS"
+QA_SED=y
+QA_VDB=y
+```
