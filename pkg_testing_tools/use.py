@@ -4,8 +4,6 @@ import random
 
 import portage
 
-from pkg_testing_tools.log import edebug
-
 
 def iuse_match_always_true(flag):
     """

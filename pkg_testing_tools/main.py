@@ -2,13 +2,13 @@
 
 import argparse
 import json
+import logging
 import os
 import subprocess
 import sys
 from contextlib import ExitStack
 
 from .job import define_jobs
-from .log import edebug, edie, eerror, einfo
 from .test import run_testing
 from .tmp import get_etc_portage_tmp_file
 
@@ -176,7 +176,7 @@ def process_args(sysargs):
         parser.print_help(sys.stderr)
         sys.exit(1)
     if args.debug:
-        edebug("{}".format(args))
+        logging.debug("{}".format(args))
     return args, extra_args
 
 
@@ -206,7 +206,8 @@ def pkg_testing_tool(args, extra_args):
         for ebuild in args.file:
             # test that file ends in ".ebuild"
             if not ebuild.endswith(".ebuild"):
-                edie("File {} does not end with '.ebuild'.".format(ebuild))
+                logging.critical("File {} does not end with '.ebuild'.".format(ebuild))
+                sys.exit(1)
             repo = os.path.dirname(
                 os.path.dirname(os.path.dirname(os.path.abspath(ebuild)))
             )
@@ -231,7 +232,7 @@ def pkg_testing_tool(args, extra_args):
             ]
             # make sure we have the right manifest already
             if args.debug:
-                edebug(f"ebuild {ebuild} manifest")
+                logging.debug(f"ebuild {ebuild} manifest")
             subprocess.run(["ebuild", ebuild, "manifest"])
 
         jobs = []
@@ -250,7 +251,7 @@ def pkg_testing_tool(args, extra_args):
 
         padding = max(len(i["cpv"]) for i in jobs) + 3
 
-        einfo("Following testing jobs will be executed:")
+        logging.info("Following testing jobs will be executed:")
         for job in jobs:
             print(
                 "{cpv:<{padding}} USE: {use_flags}{test_feature}".format(
@@ -274,7 +275,7 @@ def pkg_testing_tool(args, extra_args):
         i = 0
         for job in jobs:
             i += 1
-            einfo(
+            logging.info(
                 "Running ({i} of {max_i}) {cpv} with USE: {use_flags}{test_feature}".format(
                     i=i,
                     max_i=len(jobs),
@@ -291,7 +292,7 @@ def pkg_testing_tool(args, extra_args):
             )
             results.append(run_testing(job, args))
             if args.fail_fast and results[-1]["exit_code"] != 0:
-                eerror("Exiting due to --fail-fast.")
+                logging.error("Exiting due to --fail-fast.")
                 break
 
     failures = []
@@ -304,7 +305,7 @@ def pkg_testing_tool(args, extra_args):
             report.write(json.dumps(results, indent=4, sort_keys=True))
 
     if len(failures) > 0:
-        eerror("Not all runs were successful.")
+        logging.error("Not all runs were successful.")
         for entry in failures:
             print(
                 "atom: {atom}, USE flags: '{use_flags}'".format(
@@ -313,7 +314,7 @@ def pkg_testing_tool(args, extra_args):
             )
         sys.exit(1)
     else:
-        einfo("All good.")
+        logging.info("All good.")
 
 
 def run(sysargs):

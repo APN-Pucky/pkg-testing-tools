@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import json
+import logging
 import os
 import shlex
 import subprocess
@@ -9,7 +10,6 @@ from contextlib import ExitStack
 
 import portage
 
-from .log import edie, eerror
 from .tmp import get_etc_portage_tmp_file
 
 
@@ -49,7 +49,8 @@ def run_testing(job, args):
         if not portage.settings.get("CCACHE_DIR") or not portage.settings.get(
             "CCACHE_SIZE"
         ):
-            edie("The CCACHE_DIR and/or CCACHE_SIZE is not set!")
+            logging.critical("The CCACHE_DIR and/or CCACHE_SIZE is not set!")
+            sys.exit(1)
 
         global_features.append("ccache")
 
