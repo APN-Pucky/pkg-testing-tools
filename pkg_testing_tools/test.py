@@ -13,6 +13,22 @@ import portage
 from .tmp import get_etc_portage_tmp_file
 
 
+def call_emerge(cmdline, env, quiet, pretend):
+    result = None
+    logging.debug("Running command: {}".format(" ".join(cmdline)))
+    if not pretend:
+        result = subprocess.run(cmdline, env=env, capture_output=quiet, text=True)
+    logging.debug("Command finished.")
+    if quiet:
+        if result.returncode != 0:
+            logging.error("Emerge failed with exit code %d", result.returncode)
+            if result.stdout:
+                logging.error("STDOUT: %s", result.stdout)
+            if result.stderr:
+                logging.error("STDERR: %s", result.stderr)
+    return result
+
+
 def run_testing(job, args):
     global_features = []
 
@@ -98,8 +114,8 @@ def run_testing(job, args):
 
         env = os.environ.copy()
 
-        if args.unmerge and not args.pretend:
-            subprocess.run(unmerge_cmdline, env=env)
+        if args.unmerge:
+            call_emerge(unmerge_cmdline, env, args.quiet, args.pretend)
 
         if args.test_feature_scope == "force":
             env["EBUILD_FORCE_TEST"] = "1"
@@ -115,10 +131,7 @@ def run_testing(job, args):
             else:
                 env["FEATURES"] = " ".join(global_features)
 
-        emerge_result = None
-        if not args.pretend:
-            emerge_result = subprocess.run(emerge_cmdline, env=env)
-        print("")
+        emerge_result = call_emerge(emerge_cmdline, env, args.quiet, args.pretend)
 
     return {
         "use_flags": " ".join(job["use_flags"]),

@@ -164,6 +164,14 @@ def process_args(sysargs):
         help="Append flags or parameters to the actual emerge call.",
     )
 
+    optional.add_argument(
+        "--quiet",
+        action="store_true",
+        required=False,
+        help="Hide subprocess output unless there's an error. Default: False.",
+        default=False,
+    )
+
     args, extra_args = parser.parse_known_args(sysargs)
     if extra_args:
         if extra_args[0] != "--":
@@ -253,7 +261,7 @@ def pkg_testing_tool(args, extra_args):
 
         logging.info("Following testing jobs will be executed:")
         for job in jobs:
-            print(
+            logging.info(
                 "{cpv:<{padding}} USE: {use_flags}{test_feature}".format(
                     cpv=job["cpv"],
                     use_flags=(
@@ -307,7 +315,7 @@ def pkg_testing_tool(args, extra_args):
     if len(failures) > 0:
         logging.error("Not all runs were successful.")
         for entry in failures:
-            print(
+            logging.error(
                 "atom: {atom}, USE flags: '{use_flags}'".format(
                     atom=entry["atom"], use_flags=entry["use_flags"]
                 )
