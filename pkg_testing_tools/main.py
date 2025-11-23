@@ -157,6 +157,16 @@ def process_args(sysargs):
     )
 
     optional.add_argument(
+        "--oneshot",
+        "-1",
+        action="store",
+        type=bool,
+        default=False,
+        required=False,
+        help="Shortcut to append --oneshot/-1 to emerge command.",
+    )
+
+    optional.add_argument(
         "--append-emerge",
         action="store",
         type=str,

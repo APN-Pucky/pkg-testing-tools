@@ -36,6 +36,8 @@ def run_testing(job, args):
 
     if args.append_emerge:
         emerge_cmdline += shlex.split(args.append_emerge)
+    if args.oneshot:
+        emerge_cmdline.append("--oneshot")
 
     if args.binpkg:
         emerge_cmdline.append("--usepkg")
