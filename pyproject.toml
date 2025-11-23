@@ -2,7 +2,10 @@
 name = "pkg-testing-tools"
 version = "0.2.6"
 description = "Packages testing tools for Gentoo"
-authors = ["Alexander Puck Neuwirth <alexander@neuwirth-informatik.de>", "Piotr Karbowski <piotr.karbowski@gmail.com>"]
+authors = [
+    "Alexander Puck Neuwirth <alexander@neuwirth-informatik.de>",
+    "Piotr Karbowski <piotr.karbowski@gmail.com>"
+]
 license = "BSD"
 readme = "README.md"
 
