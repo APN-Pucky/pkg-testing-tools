@@ -47,6 +47,7 @@ def process_args(sysargs):
 
     optional.add_argument(
         "--fail-fast",
+        "-ff",
         action="store_true",
         required=False,
         help="Exit on first failure. Useful to inspect fail logs. Default: False.",
@@ -80,6 +81,7 @@ def process_args(sysargs):
 
     optional.add_argument(
         "--append-required-use",
+        "-aru",
         action="store",
         type=str,
         required=False,
@@ -88,6 +90,7 @@ def process_args(sysargs):
 
     optional.add_argument(
         "--max-use-combinations",
+        "-muc",
         action="store",
         type=int,
         required=False,
@@ -97,6 +100,7 @@ def process_args(sysargs):
 
     optional.add_argument(
         "--use-flags-scope",
+        "-ufs",
         action="store",
         type=str,
         required=False,
@@ -107,6 +111,7 @@ def process_args(sysargs):
 
     optional.add_argument(
         "--test-feature-scope",
+        "-tfs",
         action="store",
         type=str,
         required=False,
@@ -150,6 +155,7 @@ def process_args(sysargs):
 
     optional.add_argument(
         "--extra-env-file",
+        "-eef",
         action="append",
         type=str,
         required=False,
@@ -158,6 +164,7 @@ def process_args(sysargs):
 
     optional.add_argument(
         "--append-emerge",
+        "-ae",
         action="store",
         type=str,
         required=False,
