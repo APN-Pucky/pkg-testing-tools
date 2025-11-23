@@ -59,9 +59,8 @@ def define_jobs(atom, args):
         ),
     }
 
-    if args.debug:
-        logging.debug("common: {}".format(common))
-        logging.debug("package_metadata: {}".format(package_metadata))
+    logging.debug("common: {}".format(common))
+    logging.debug("package_metadata: {}".format(package_metadata))
 
     if args.append_required_use:
         package_metadata["ruse"].append(args.append_required_use)
@@ -72,11 +71,9 @@ def define_jobs(atom, args):
             package_metadata["ruse"],
             args.max_use_combinations,
         )
-        if args.debug:
-            logging.debug("Use flags found for {}: {}".format(atom, use_combinations))
+        logging.debug("Use flags found for {}: {}".format(atom, use_combinations))
     else:
-        if args.debug:
-            logging.debug("No use flags found for {}".format(atom))
+        logging.debug("No use flags found for {}".format(atom))
         use_combinations = None
 
     if use_combinations:

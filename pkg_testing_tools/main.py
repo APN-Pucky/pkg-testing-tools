@@ -9,7 +9,7 @@ import sys
 from contextlib import ExitStack
 
 from .job import define_jobs
-from .test import run_testing
+from .test import run_cmd, run_testing
 from .tmp import get_etc_portage_tmp_file
 
 
@@ -183,8 +183,7 @@ def process_args(sysargs):
     if len(sysargs) == 0:
         parser.print_help(sys.stderr)
         sys.exit(1)
-    if args.debug:
-        logging.debug("{}".format(args))
+    logging.debug("{}".format(args))
     return args, extra_args
 
 
@@ -239,9 +238,13 @@ def pkg_testing_tool(args, extra_args):
                 "=" + category + "/" + package_version + "::" + repo_name
             ]
             # make sure we have the right manifest already
-            if args.debug:
-                logging.debug(f"ebuild {ebuild} manifest")
-            subprocess.run(["ebuild", ebuild, "manifest"])
+            logging.debug(f"ebuild {ebuild} manifest")
+            run_cmd(
+                ["ebuild", ebuild, "manifest"],
+                os.environ.copy(),
+                args.quiet,
+                args.pretend,
+            )
 
         jobs = []
 
@@ -327,6 +330,11 @@ def pkg_testing_tool(args, extra_args):
 
 def run(sysargs):
     args, extra_args = process_args(sysargs)
+
+    # Configure logging
+    log_level = logging.DEBUG if args.debug else logging.INFO
+    logging.basicConfig(level=log_level, format="[%(levelname)s] >>> %(message)s")
+
     pkg_testing_tool(args, extra_args)
 
 
