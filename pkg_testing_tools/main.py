@@ -183,6 +183,11 @@ def process_args(sysargs):
     if len(sysargs) == 0:
         parser.print_help(sys.stderr)
         sys.exit(1)
+
+    # Configure logging
+    log_level = logging.DEBUG if args.debug else logging.INFO
+    logging.basicConfig(level=log_level, format="[%(levelname)s] >>> %(message)s")
+
     logging.debug("{}".format(args))
     return args, extra_args
 
@@ -330,10 +335,6 @@ def pkg_testing_tool(args, extra_args):
 
 def run(sysargs):
     args, extra_args = process_args(sysargs)
-
-    # Configure logging
-    log_level = logging.DEBUG if args.debug else logging.INFO
-    logging.basicConfig(level=log_level, format="[%(levelname)s] >>> %(message)s")
 
     pkg_testing_tool(args, extra_args)
 

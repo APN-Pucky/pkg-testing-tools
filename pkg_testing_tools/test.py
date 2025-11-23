@@ -21,7 +21,7 @@ def run_cmd(cmdline, env, quiet, pretend):
     logging.debug("Command finished.")
     if quiet and result is not None:
         if result.returncode != 0:
-            logging.error("Emerge failed with exit code %d", result.returncode)
+            logging.error("Command failed with exit code %d", result.returncode)
             if result.stdout:
                 logging.error("STDOUT: %s", result.stdout)
             if result.stderr:
