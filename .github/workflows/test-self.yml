@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: apnpucky/gentoo-apn:202409251759-latest
+    container: apnpucky/gentoo-apn:latest
     strategy:
       fail-fast: false
       matrix:
