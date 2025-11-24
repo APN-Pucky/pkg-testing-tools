@@ -7,15 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.7] - 2025-11-24
+
 ### Added
 
 - `--slow` flag: to run a single thread job
-
+- `--quiet` flag: to only show emerge output on failures
+- `--oneshot/-1` flag: to not add test package to world
 
 ### Changed
 
 - Do test run before non-test runs.
-
+- Use python logging module instead of print
 
 ## [0.2.6] - 2024-12-04
 
@@ -82,7 +85,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - cpv matching for '~category/package-version' works now
 
-[unreleased]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.5...HEAD
+[unreleased]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.7...HEAD
+[0.2.7]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.6...0.2.7
+[0.2.6]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.5...0.2.6
 [0.2.5]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.4...0.2.5
 [0.2.4]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.2...0.2.3
