@@ -25,6 +25,7 @@ jobs:
         ]
     steps:
     - run: emerge --sync
+    - run: git clone --depth 1 https://github.com/gentoo/sci.git
     - run: echo 'app-portage/pkg-testing-tools **' > /etc/portage/package.accept_keywords/pkg-testing-tools
     - run: |
         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
