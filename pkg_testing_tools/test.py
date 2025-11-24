@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import json
+import logging
 import os
 import shlex
 import subprocess
@@ -9,8 +10,23 @@ from contextlib import ExitStack
 
 import portage
 
-from .log import edie, eerror
 from .tmp import get_etc_portage_tmp_file
+
+
+def run_cmd(cmdline, env, quiet, pretend):
+    result = None
+    logging.debug("Running command: {}".format(" ".join(cmdline)))
+    if not pretend:
+        result = subprocess.run(cmdline, env=env, capture_output=quiet, text=True)
+    logging.debug("Command finished.")
+    if quiet and result is not None:
+        if result.returncode != 0:
+            logging.error("Command failed with exit code %d", result.returncode)
+            if result.stdout:
+                logging.error("STDOUT: %s", result.stdout)
+            if result.stderr:
+                logging.error("STDERR: %s", result.stderr)
+    return result
 
 
 def run_testing(job, args):
@@ -49,7 +65,8 @@ def run_testing(job, args):
         if not portage.settings.get("CCACHE_DIR") or not portage.settings.get(
             "CCACHE_SIZE"
         ):
-            edie("The CCACHE_DIR and/or CCACHE_SIZE is not set!")
+            logging.critical("The CCACHE_DIR and/or CCACHE_SIZE is not set!")
+            sys.exit(1)
 
         global_features.append("ccache")
 
@@ -97,8 +114,8 @@ def run_testing(job, args):
 
         env = os.environ.copy()
 
-        if args.unmerge and not args.pretend:
-            subprocess.run(unmerge_cmdline, env=env)
+        if args.unmerge:
+            run_cmd(unmerge_cmdline, env, args.quiet, args.pretend)
 
         if args.test_feature_scope == "force":
             env["EBUILD_FORCE_TEST"] = "1"
@@ -114,10 +131,7 @@ def run_testing(job, args):
             else:
                 env["FEATURES"] = " ".join(global_features)
 
-        emerge_result = None
-        if not args.pretend:
-            emerge_result = subprocess.run(emerge_cmdline, env=env)
-        print("")
+        emerge_result = run_cmd(emerge_cmdline, env, args.quiet, args.pretend)
 
     return {
         "use_flags": " ".join(job["use_flags"]),

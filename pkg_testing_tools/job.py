@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import json
+import logging
 import os
 import shlex
 import subprocess
@@ -10,7 +11,6 @@ from tempfile import NamedTemporaryFile
 
 import portage
 
-from .log import edebug, edie, eerror, einfo
 from .use import atom_to_cpv, get_package_flags, get_use_combinations
 
 
@@ -19,12 +19,14 @@ def get_package_metadata(atom):
     cpv = atom_to_cpv(atom)
     # cpv is None on missing/masked packages
     if cpv:
-        edebug(f"cpv through match(): {cpv}")
+        logging.debug(f"cpv through match(): {cpv}")
     else:
-        edebug(f"could not find unmasked package {atom}, assuming it is available")
+        logging.debug(
+            f"could not find unmasked package {atom}, assuming it is available"
+        )
         # This handles live ebuilds properly, but not revisions: https://bugs.gentoo.org/918693 https://github.com/APN-Pucky/pkg-testing-tools/issues/10
         cpv = portage.dep.dep_getcpv(atom)
-        edebug(f"cpv through dep_getcpv(): {cpv}")
+        logging.debug(f"cpv through dep_getcpv(): {cpv}")
 
     cp, version, revision = portage.versions.pkgsplit(cpv)
 
@@ -57,9 +59,8 @@ def define_jobs(atom, args):
         ),
     }
 
-    if args.debug:
-        edebug("common: {}".format(common))
-        edebug("package_metadata: {}".format(package_metadata))
+    logging.debug("common: {}".format(common))
+    logging.debug("package_metadata: {}".format(package_metadata))
 
     if args.append_required_use:
         package_metadata["ruse"].append(args.append_required_use)
@@ -70,11 +71,9 @@ def define_jobs(atom, args):
             package_metadata["ruse"],
             args.max_use_combinations,
         )
-        if args.debug:
-            edebug("Use flags found for {}: {}".format(atom, use_combinations))
+        logging.debug("Use flags found for {}: {}".format(atom, use_combinations))
     else:
-        if args.debug:
-            edebug("No use flags found for {}".format(atom))
+        logging.debug("No use flags found for {}".format(atom))
         use_combinations = None
 
     if use_combinations:
