@@ -77,19 +77,28 @@ def define_jobs(atom, args):
         use_combinations = None
 
     if use_combinations:
-        if (
-            package_metadata["has_tests"] and args.test_feature_scope == "always"
-        ) or args.test_feature_scope == "force":
-            test_feature_toggle = True
-        else:
-            test_feature_toggle = False
+        if package_metadata["has_tests"] and args.test_feature_scope == "first":
+            job = {}
+            job.update(common)
+            job.update(
+                {
+                    "test_feature_toggle": True,
+                    "use_flags": [],
+                    "use_flags_scope": args.use_flags_scope,
+                }
+            )
+            jobs.append(job)
 
         for flags_set in use_combinations:
             job = {}
             job.update(common)
             job.update(
                 {
-                    "test_feature_toggle": test_feature_toggle,
+                    "test_feature_toggle": (
+                        package_metadata["has_tests"]
+                        and args.test_feature_scope == "always"
+                    )
+                    or args.test_feature_scope == "force",
                     "use_flags": flags_set,
                     "use_flags_scope": args.use_flags_scope,
                 }
@@ -113,7 +122,7 @@ def define_jobs(atom, args):
             job.update(common)
             job.update(
                 {
-                    # This is effectively false
+                    # This is effectively false (except if force is set and package has no tests)
                     "test_feature_toggle": args.test_feature_scope == "force",
                     "use_flags": [],
                     "use_flags_scope": args.use_flags_scope,
@@ -121,14 +130,20 @@ def define_jobs(atom, args):
             )
             jobs.append(job)
         else:
+            if args.test_feature_scope != "first":
+                job = {}
+                job.update(common)
+                job.update({"test_feature_toggle": False, "use_flags": []})
+                jobs.append(job)
+
             job = {}
             job.update(common)
             job.update({"test_feature_toggle": True, "use_flags": []})
             jobs.append(job)
 
-            job = {}
-            job.update(common)
-            job.update({"test_feature_toggle": False, "use_flags": []})
-            jobs.append(job)
-
+            if args.test_feature_scope == "first":
+                job = {}
+                job.update(common)
+                job.update({"test_feature_toggle": False, "use_flags": []})
+                jobs.append(job)
     return jobs
