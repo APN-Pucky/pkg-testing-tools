@@ -126,7 +126,7 @@ def process_args(sysargs):
         default="once",
         choices=["once", "always", "force", "never", "first"],
         # always respects if the package has tests or not to set FEATURES='test', whereas force always sets it, even if package has no tests.
-        help="Enables FEATURES='test' once, for default use flags, always, for every run or never. force also sets EBUILD_FORCE_TEST=1. Default: 'once'. Meaning tests are executed last.",
+        help="Enables FEATURES='test' once (for default use flags, executed last), always (for every run), first (for default use flags, executed first), never, or force (also sets EBUILD_FORCE_TEST=1). Default: 'once'.",
     )
 
     optional.add_argument(

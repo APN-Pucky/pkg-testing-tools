@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Revert to running tests lasts unless new `--test-feature-scope=first` is set
+- Revert to running tests last unless new `--test-feature-scope=first` is set
 
 
 ## [0.2.7] - 2025-11-24
