@@ -46,6 +46,14 @@ def process_args(sysargs):
     )
 
     optional.add_argument(
+        "--depclean",
+        "-c",
+        action="store_true",
+        required=False,
+        help="Perform 'emerge --depclean' before each test install to remove previously pulled dependencies.",
+    )
+
+    optional.add_argument(
         "--fail-fast",
         "-ff",
         action="store_true",

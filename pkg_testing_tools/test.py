@@ -49,6 +49,10 @@ def run_testing(job, args):
         "--rage-clean",
         job["cp"],
     ]
+    depclean_cmdline = [
+        "emerge",
+        "--depclean",
+    ]
 
     if args.append_emerge:
         emerge_cmdline += shlex.split(args.append_emerge)
@@ -118,6 +122,9 @@ def run_testing(job, args):
 
         if args.unmerge:
             run_cmd(unmerge_cmdline, env, args.quiet, args.pretend)
+
+        if args.depclean:
+            run_cmd(depclean_cmdline, env, args.quiet, args.pretend)
 
         if args.test_feature_scope == "force":
             env["EBUILD_FORCE_TEST"] = "1"
