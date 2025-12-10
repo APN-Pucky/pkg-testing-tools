@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `--depclean/-c` flag: to perform 'emerge --depclean' before each test install
+- Add `--test-feature-scope=first` to run test feature toggle first
+
+### Changed
+
+- Revert to running tests last unless new `--test-feature-scope=first` is set
+
+
 ## [0.2.7] - 2025-11-24
 
 ### Added

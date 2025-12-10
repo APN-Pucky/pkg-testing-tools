@@ -46,6 +46,14 @@ def process_args(sysargs):
     )
 
     optional.add_argument(
+        "--depclean",
+        "-c",
+        action="store_true",
+        required=False,
+        help="Perform 'emerge --depclean' before each test install to remove previously pulled dependencies.",
+    )
+
+    optional.add_argument(
         "--fail-fast",
         "-ff",
         action="store_true",
@@ -116,8 +124,9 @@ def process_args(sysargs):
         type=str,
         required=False,
         default="once",
-        choices=["once", "always", "force", "never"],
-        help="Enables FEATURES='test' once, for default use flags, always, for every run or never. force also sets EBUILD_FORCE_TEST=1. Default: 'once'.",
+        choices=["once", "always", "force", "never", "first"],
+        # always respects if the package has tests or not to set FEATURES='test', whereas force always sets it, even if package has no tests.
+        help="Enables FEATURES='test' once (for default use flags, executed last), always (for every run), first (for default use flags, executed first), never, or force (also sets EBUILD_FORCE_TEST=1). Default: 'once'.",
     )
 
     optional.add_argument(
