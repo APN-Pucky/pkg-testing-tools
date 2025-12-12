@@ -191,18 +191,18 @@ def get_use_combinations(
         dense_index_count = len(iuse) + 1
         for index in range(0, all_combinations_count):
             flags = get_use_flags_toggles(index, iuse)
-            current_sparse_count = count_deactivated_use_flags(flags)
-            if add_sparse_use and current_sparse_count > sparse_count:
+            deactivated_count = count_deactivated_use_flags(flags)
+            if add_sparse_use and deactivated_count > sparse_count:
                 if portage.dep.check_required_use(
                     " ".join(ruse), flags, iuse_match_always_true
                 ):
-                    sparse_count = current_sparse_count
+                    sparse_count = deactivated_count
                     sparse_index = index
-            if add_dense_use and current_sparse_count < dense_index_count:
+            if add_dense_use and deactivated_count < dense_index_count:
                 if portage.dep.check_required_use(
                     " ".join(ruse), flags, iuse_match_always_true
                 ):
-                    dense_index_count = current_sparse_count
+                    dense_index_count = deactivated_count
                     dense_index = index
         if add_sparse_use and sparse_index != -1:
             flags = get_use_flags_toggles(sparse_index, iuse)
