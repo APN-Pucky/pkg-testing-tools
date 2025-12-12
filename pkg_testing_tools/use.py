@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import logging
 import random
 
 import portage
@@ -98,7 +99,7 @@ def get_package_flags(cpv):
     return [use_flags, ruse_flags]
 
 
-def get_use_flags_toggles(index, iuse):
+def get_use_flags_toggles(index: int, iuse: list[str]) -> list[str]:
     """
     Toggle use flags based on the index.
 
@@ -132,7 +133,37 @@ def get_use_flags_toggles(index, iuse):
     return flags
 
 
-def get_use_combinations(iuse, ruse, max_use_combinations):
+def count_deactivated_use_flags(iuse: list[str]) -> int:
+    """
+    Count the number of deactivated use flags in the iuse list.
+
+    :param iuse: list of use flags
+    :return: number of deactivated use flags
+
+    >>> count_deactivated_use_flags(["-flag1", "flag2", "-flag3", "flag4"])
+    2
+    >>> count_deactivated_use_flags(["flag1", "flag2", "flag3"])
+    0
+    >>> count_deactivated_use_flags(["-flag1", "-flag2", "-flag3"])
+    3
+    """
+    count = 0
+
+    for flag in iuse:
+        # we don't count single_target disabling flags
+        if flag.startswith("-") and not "single_target" in flag:
+            count += 1
+
+    return count
+
+
+def get_use_combinations(
+    iuse: list[str],
+    ruse: list[str],
+    max_use_combinations: int,
+    add_sparse_use: bool = False,
+    add_dense_use: bool = False,
+) -> list[list[str]]:
     """
     Iterate through all possible use flag combinations and return the ones that
 
@@ -151,7 +182,35 @@ def get_use_combinations(iuse, ruse, max_use_combinations):
     """
     all_combinations_count = 2 ** len(iuse)
 
-    valid_use_flags_combinations = []
+    # This is a set because we want to avoid duplicates when adding sparse/dense use.
+    valid_use_flags_combinations = set()
+
+    if add_sparse_use or add_dense_use:
+        sparse_index = -1
+        sparse_count = -1
+        dense_index = -1
+        dense_index_count = len(iuse) + 1
+        for index in range(0, all_combinations_count):
+            flags = get_use_flags_toggles(index, iuse)
+            current_sparse_count = count_deactivated_use_flags(flags)
+            if add_sparse_use and current_sparse_count > sparse_count:
+                if portage.dep.check_required_use(
+                    " ".join(ruse), flags, iuse_match_always_true
+                ):
+                    sparse_count = current_sparse_count
+                    sparse_index = index
+            if add_dense_use and current_sparse_count < dense_index_count:
+                if portage.dep.check_required_use(
+                    " ".join(ruse), flags, iuse_match_always_true
+                ):
+                    dense_index_count = current_sparse_count
+                    dense_index = index
+        if add_sparse_use and sparse_index != -1:
+            flags = get_use_flags_toggles(sparse_index, iuse)
+            valid_use_flags_combinations.add(tuple(flags))
+        if add_dense_use and dense_index != -1:
+            flags = get_use_flags_toggles(dense_index, iuse)
+            valid_use_flags_combinations.add(tuple(flags))
 
     if max_use_combinations >= 0 and all_combinations_count > max_use_combinations:
         random.seed()
@@ -173,7 +232,7 @@ def get_use_combinations(iuse, ruse, max_use_combinations):
             if portage.dep.check_required_use(
                 " ".join(ruse), flags, iuse_match_always_true
             ):
-                valid_use_flags_combinations.append(flags)
+                valid_use_flags_combinations.add(tuple(flags))
     else:
         for index in range(0, all_combinations_count):
             flags = get_use_flags_toggles(index, iuse)
@@ -181,6 +240,7 @@ def get_use_combinations(iuse, ruse, max_use_combinations):
             if portage.dep.check_required_use(
                 " ".join(ruse), flags, iuse_match_always_true
             ):
-                valid_use_flags_combinations.append(flags)
+                valid_use_flags_combinations.add(tuple(flags))
 
-    return valid_use_flags_combinations
+    # Convert set of tuples back to list of lists
+    return [list(combination) for combination in valid_use_flags_combinations]

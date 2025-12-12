@@ -70,6 +70,8 @@ def define_jobs(atom, args):
             package_metadata["iuse"],
             package_metadata["ruse"],
             args.max_use_combinations,
+            args.add_sparse_use,
+            args.add_dense_use,
         )
         logging.debug("Use flags found for {}: {}".format(atom, use_combinations))
     else:

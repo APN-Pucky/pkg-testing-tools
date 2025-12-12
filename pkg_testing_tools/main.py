@@ -97,6 +97,22 @@ def process_args(sysargs):
     )
 
     optional.add_argument(
+        "--add-sparse-use",
+        "-asu",
+        action="store_true",
+        required=False,
+        help="Add one combination with the minimal number of USE flags enabled that passes REQUIRED_USE.",
+    )
+
+    optional.add_argument(
+        "--add-dense-use",
+        "-adu",
+        action="store_true",
+        required=False,
+        help="Add one combination with the maximal number of USE flags enabled that passes REQUIRED_USE.",
+    )
+
+    optional.add_argument(
         "--max-use-combinations",
         "-muc",
         action="store",

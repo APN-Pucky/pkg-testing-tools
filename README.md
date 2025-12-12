@@ -56,7 +56,7 @@ As root:
 ```
 $ poetry config virtualenvs.options.system-site-packages true
 $ poetry install
-$ poetry shell
+$ poetry env activate
 $ pkg-testing-tool --help
 ```
 
