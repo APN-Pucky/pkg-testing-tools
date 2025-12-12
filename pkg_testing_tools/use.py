@@ -124,11 +124,11 @@ def yield_use_flags_toggles_sorted(
 
 def yield_use_flags_toggles_sorted_split(
     iuse_sorted: list[str],
-    iuse_ignored: list[str],
+    iuse_unsorted: list[str],
     inverted: bool = False,
 ) -> Iterable[list[str]]:
     for sorted_uses in yield_use_flags_toggles_sorted(iuse_sorted, inverted):
-        for unsorted_uses in yield_use_flags_toggles_sorted(iuse_ignored, inverted):
+        for unsorted_uses in yield_use_flags_toggles_sorted(iuse_unsorted, inverted):
             yield sorted_uses + unsorted_uses
 
 
