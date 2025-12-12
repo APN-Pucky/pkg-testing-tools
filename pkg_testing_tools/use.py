@@ -109,6 +109,10 @@ def yield_use_flags_toggles_sorted(
     Much faster than looping through all combinations.
 
     This function is needed for finding the dense/sparse use flags when there are many use flags (e.g. firefox).
+
+    :param iuse: list of use flags
+    :param inverted: whether to invert the toggling logic (False for sparse, True for dense)
+    :return: iterator yielding use flag combinations sorted by number of enabled flags
     """
 
     str_enabled = "" if not inverted else "-"
