@@ -187,7 +187,9 @@ def get_use_combinations(
         sparse_index = -1
         sparse_count = -1
         dense_index = -1
-        dense_index_count = len(iuse) + 1
+        dense_index_count = (
+            len(iuse) + 1
+        )  # This is an overestimation since single_target disabling flags are not counted
         for index in range(0, all_combinations_count):
             flags = get_use_flags_toggles(index, iuse)
             deactivated_count = count_deactivated_use_flags(flags)
@@ -244,5 +246,4 @@ def get_use_combinations(
                 if flags not in valid_use_flags_combinations:
                     valid_use_flags_combinations.append(flags)
 
-    # Return list of lists directly (no conversion needed)
     return valid_use_flags_combinations
