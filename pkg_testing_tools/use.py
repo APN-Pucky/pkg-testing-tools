@@ -192,8 +192,8 @@ def get_use_combinations(
     :param iuse: list of use flags
     :param ruse: list of required use flags
     :param max_use_combinations: maximum number of use flag combinations to return
-    :param add_sparse_use:
-    :param add_dense_use:
+    :param add_sparse_use: add the combination with the fewest enabled USE flags that satisfies constraints
+    :param add_dense_use: add the combination with the most enabled USE flags that satisfies constraints
     :return: list of valid use flag combinations
 
     >>> get_use_combinations(["flag1", "flag2", "flag3"], ["flag1"], 999)
