@@ -151,7 +151,7 @@ def count_deactivated_use_flags(iuse: list[str]) -> int:
 
     for flag in iuse:
         # we don't count single_target disabling flags
-        if flag.startswith("-") and not "single_target" in flag:
+        if flag.startswith("-") and "single_target" not in flag:
             count += 1
 
     return count
