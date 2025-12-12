@@ -210,6 +210,8 @@ def get_use_combinations(
     [['-flag1', '-flag2', '-flag3']]
     >>> get_use_combinations(["flag1", "flag2", "flag3"], ["!flag1"], 1, False, True)
     [['-flag1', 'flag2', 'flag3']]
+    >>> get_use_combinations(["flag1", "flag2"], [], 999, True, True) # doctest: +ELLIPSIS
+    [['-flag1', '-flag2'], ['flag1', 'flag2'], [...], [...]]
 
     """
     all_combinations_count = 2 ** len(iuse)
