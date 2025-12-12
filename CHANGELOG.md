@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `--depclean/-c` flag: to perform 'emerge --depclean' before each test install
 - Add `--test-feature-scope=first` to run test feature toggle first
-- Add `--add-sparse-use/-asu` to add one combination with minimal number of USE flags enabled that passes REQUIRED_USE
-- Add `--add-dense-use/-adu` to add one combination with maximal number of USE flags enabled that passes REQUIRED_USE
+- Add `--add-sparse-use/-asu` to add one combination with minimal number of USE flags enabled that passes REQUIRED_USE (single_targets are excluded from counting)
+- Add `--add-dense-use/-adu` to add one combination with maximal number of USE flags enabled that passes REQUIRED_USE (single_tagets are excluded from counting)
 
 ### Changed
 

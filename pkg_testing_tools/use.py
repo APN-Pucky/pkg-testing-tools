@@ -101,14 +101,16 @@ def get_package_flags(cpv):
 
 
 def yield_use_flags_toggles_sorted(
-    iuse: list[str], inverted: bool = False
+    iuse: list[str],
+    inverted: bool = False,
 ) -> Iterable[list[str]]:
     """
     Generate use flag combinations sorted by number of enabled flags.
     Much faster than looping through all combinations.
 
-    This function is needed for finding the dense/sparse use flags when there are many use flags (e.g. firefox)
+    This function is needed for finding the dense/sparse use flags when there are many use flags (e.g. firefox).
     """
+
     str_enabled = "" if not inverted else "-"
     str_disabled = "-" if not inverted else ""
     n = len(iuse)
@@ -118,6 +120,16 @@ def yield_use_flags_toggles_sorted(
             for i in ones_pos:
                 vec[i] = str_enabled
             yield list("".join(flag) for flag in list(zip(vec, iuse)))
+
+
+def yield_use_flags_toggles_sorted_split(
+    iuse_sorted: list[str],
+    iuse_ignored: list[str],
+    inverted: bool = False,
+) -> Iterable[list[str]]:
+    for sorted_uses in yield_use_flags_toggles_sorted(iuse_sorted, inverted):
+        for unsorted_uses in yield_use_flags_toggles_sorted(iuse_ignored, inverted):
+            yield sorted_uses + unsorted_uses
 
 
 def get_use_flags_toggles(
@@ -195,11 +207,13 @@ def get_use_combinations(
     add_dense_use: bool = False,
 ) -> list[list[str]]:
     """
-    Iterate through all possible use flag combinations and return the ones that
+    Iterate through all possible use flag combinations and return the ones that satisfy the required use constraints specified by the ruse parameter.
 
     :param iuse: list of use flags
     :param ruse: list of required use flags
     :param max_use_combinations: maximum number of use flag combinations to return
+    :param add_sparse_use:
+    :param add_dense_use:
     :return: list of valid use flag combinations
 
     >>> get_use_combinations(["flag1", "flag2", "flag3"], ["flag1"], 999)
@@ -223,7 +237,11 @@ def get_use_combinations(
     valid_use_flags_combinations = []
 
     if add_sparse_use:
-        for flags in yield_use_flags_toggles_sorted(iuse, False):
+        for flags in yield_use_flags_toggles_sorted_split(
+            [use for use in iuse if "single_target" not in use],
+            [use for use in iuse if "single_target" in use],
+            False,
+        ):
             if (
                 flags not in valid_use_flags_combinations
                 and portage.dep.check_required_use(
@@ -231,10 +249,14 @@ def get_use_combinations(
                 )
             ):
                 valid_use_flags_combinations.append(flags)
-                break  # early quit O(n!) loop
+                break  # early quit O(2^n) loop
 
     if add_dense_use:
-        for flags in yield_use_flags_toggles_sorted(iuse, True):
+        for flags in yield_use_flags_toggles_sorted_split(
+            [use for use in iuse if "single_target" not in use],
+            [use for use in iuse if "single_target" in use],
+            True,
+        ):
             if (
                 flags not in valid_use_flags_combinations
                 and portage.dep.check_required_use(
@@ -242,7 +264,7 @@ def get_use_combinations(
                 )
             ):
                 valid_use_flags_combinations.append(flags)
-                break  # early quit O(n!) loop
+                break  # early quit O(2^n) loop
 
     if max_use_combinations >= 0 and all_combinations_count > max_use_combinations:
         random.seed()

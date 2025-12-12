@@ -101,7 +101,7 @@ def process_args(sysargs):
         "-asu",
         action="store_true",
         required=False,
-        help="Add one combination with the minimal number of USE flags enabled that passes REQUIRED_USE.",
+        help="Add one combination with the minimal number of USE flags enabled that passes REQUIRED_USE (excluding single_target).",
     )
 
     optional.add_argument(
@@ -109,7 +109,7 @@ def process_args(sysargs):
         "-adu",
         action="store_true",
         required=False,
-        help="Add one combination with the maximal number of USE flags enabled that passes REQUIRED_USE.",
+        help="Add one combination with the maximal number of USE flags enabled that passes REQUIRED_USE (excluding single_target).",
     )
 
     optional.add_argument(
