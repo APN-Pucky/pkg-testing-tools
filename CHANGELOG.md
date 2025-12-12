@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.8] - 2025-12-12
+
 ### Added
 
 - `--depclean/-c` flag: to perform 'emerge --depclean' before each test install
@@ -97,7 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - cpv matching for '~category/package-version' works now
 
-[unreleased]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.7...HEAD
+[unreleased]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.8...HEAD
+[0.2.8]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.7...0.2.8
 [0.2.7]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.6...0.2.7
 [0.2.6]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.5...0.2.6
 [0.2.5]: https://github.com/APN-Pucky/pkg-testing-tools/compare/0.2.4...0.2.5
