@@ -57,7 +57,7 @@ As root:
 $ poetry config virtualenvs.options.system-site-packages true
 $ poetry install
 $ $(poetry env activate)
-$ pkg-testing-tool --help
+(pkg-testing-tools-py3.13) $ pkg-testing-tool --help
 ```
 
 Then, changes to pkg-testing-tools source code become immediately active.

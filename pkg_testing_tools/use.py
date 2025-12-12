@@ -182,8 +182,7 @@ def get_use_combinations(
     """
     all_combinations_count = 2 ** len(iuse)
 
-    # This is a set because we want to avoid duplicates when adding sparse/dense use.
-    valid_use_flags_combinations = set()
+    valid_use_flags_combinations = []
 
     if add_sparse_use or add_dense_use:
         sparse_index = -1
@@ -207,10 +206,12 @@ def get_use_combinations(
                     dense_index = index
         if add_sparse_use and sparse_index != -1:
             flags = get_use_flags_toggles(sparse_index, iuse)
-            valid_use_flags_combinations.add(tuple(flags))
+            if flags not in valid_use_flags_combinations:
+                valid_use_flags_combinations.append(flags)
         if add_dense_use and dense_index != -1:
             flags = get_use_flags_toggles(dense_index, iuse)
-            valid_use_flags_combinations.add(tuple(flags))
+            if flags not in valid_use_flags_combinations:
+                valid_use_flags_combinations.append(flags)
 
     if max_use_combinations >= 0 and all_combinations_count > max_use_combinations:
         random.seed()
@@ -232,7 +233,8 @@ def get_use_combinations(
             if portage.dep.check_required_use(
                 " ".join(ruse), flags, iuse_match_always_true
             ):
-                valid_use_flags_combinations.add(tuple(flags))
+                if flags not in valid_use_flags_combinations:
+                    valid_use_flags_combinations.append(flags)
     else:
         for index in range(0, all_combinations_count):
             flags = get_use_flags_toggles(index, iuse)
@@ -240,7 +242,8 @@ def get_use_combinations(
             if portage.dep.check_required_use(
                 " ".join(ruse), flags, iuse_match_always_true
             ):
-                valid_use_flags_combinations.add(tuple(flags))
+                if flags not in valid_use_flags_combinations:
+                    valid_use_flags_combinations.append(flags)
 
-    # Convert set of tuples back to list of lists
-    return [list(combination) for combination in valid_use_flags_combinations]
+    # Return list of lists directly (no conversion needed)
+    return valid_use_flags_combinations
