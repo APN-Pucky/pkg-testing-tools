@@ -175,30 +175,6 @@ def get_use_flags_toggles(
     return flags
 
 
-def count_deactivated_use_flags(iuse: list[str]) -> int:
-    """
-    Count the number of deactivated use flags in the iuse list.
-
-    :param iuse: list of use flags
-    :return: number of deactivated use flags
-
-    >>> count_deactivated_use_flags(["-flag1", "flag2", "-flag3", "flag4"])
-    2
-    >>> count_deactivated_use_flags(["flag1", "flag2", "flag3"])
-    0
-    >>> count_deactivated_use_flags(["-flag1", "-flag2", "-flag3"])
-    3
-    """
-    count = 0
-
-    for flag in iuse:
-        # we don't count single_target disabling flags
-        if flag.startswith("-") and "single_target" not in flag:
-            count += 1
-
-    return count
-
-
 def get_use_combinations(
     iuse: list[str],
     ruse: list[str],
