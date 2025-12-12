@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+import itertools
 import random
+from typing import Iterable
 
 import portage
 
@@ -98,12 +100,35 @@ def get_package_flags(cpv):
     return [use_flags, ruse_flags]
 
 
-def get_use_flags_toggles(index: int, iuse: list[str]) -> list[str]:
+def yield_use_flags_toggles_sorted(
+    iuse: list[str], inverted: bool = False
+) -> Iterable[list[str]]:
+    """
+    Generate use flag combinations sorted by number of enabled flags.
+    Much faster than looping through all combinations.
+
+    This function is needed for finding the dense/sparse use flags when there are many use flags (e.g. firefox)
+    """
+    str_enabled = "" if not inverted else "-"
+    str_disabled = "-" if not inverted else ""
+    n = len(iuse)
+    for k in range(n + 1):
+        for ones_pos in itertools.combinations(range(n), k):
+            vec = [str_disabled] * n
+            for i in ones_pos:
+                vec[i] = str_enabled
+            yield list("".join(flag) for flag in list(zip(vec, iuse)))
+
+
+def get_use_flags_toggles(
+    index: int, iuse: list[str], inverted: bool = False
+) -> list[str]:
     """
     Toggle use flags based on the index.
 
     :param index: index of the use flag combination
     :param iuse: list of use flags
+    :param inverted: whether to invert the toggling logic
     :return: list of use flags with the toggled flags
 
     >>> get_use_flags_toggles(0, ["flag1", "flag2", "flag3"])
@@ -118,14 +143,20 @@ def get_use_flags_toggles(index: int, iuse: list[str]) -> list[str]:
     ['-flag1', '-flag2', 'flag3']
     >>> get_use_flags_toggles(7, ["flag1", "flag2", "flag3"])
     ['flag1', 'flag2', 'flag3']
+    >>> get_use_flags_toggles(0, ["flag1", "flag2", "flag3"], inverted=True)
+    ['flag1', 'flag2', 'flag3']
+    >>> get_use_flags_toggles(4, ["flag1", "flag2", "flag3"], inverted=True)
+    ['flag1', 'flag2', '-flag3']
     """
     on_off_switches = []
+    str_enabled = "" if not inverted else "-"
+    str_disabled = "-" if not inverted else ""
 
     for i in range(len(iuse)):
         if (2**i) & index:
-            on_off_switches.append("")
+            on_off_switches.append(str_enabled)
         else:
-            on_off_switches.append("-")
+            on_off_switches.append(str_disabled)
 
     flags = list("".join(flag) for flag in list(zip(on_off_switches, iuse)))
 
@@ -191,36 +222,27 @@ def get_use_combinations(
 
     valid_use_flags_combinations = []
 
-    if add_sparse_use or add_dense_use:
-        sparse_index = -1
-        sparse_count = -1
-        dense_index = -1
-        dense_index_count = (
-            len(iuse) + 1
-        )  # This is an overestimation since single_target disabling flags are not counted
-        for index in range(0, all_combinations_count):
-            flags = get_use_flags_toggles(index, iuse)
-            deactivated_count = count_deactivated_use_flags(flags)
-            if add_sparse_use and deactivated_count > sparse_count:
-                if portage.dep.check_required_use(
+    if add_sparse_use:
+        for flags in yield_use_flags_toggles_sorted(iuse, False):
+            if (
+                flags not in valid_use_flags_combinations
+                and portage.dep.check_required_use(
                     " ".join(ruse), flags, iuse_match_always_true
-                ):
-                    sparse_count = deactivated_count
-                    sparse_index = index
-            if add_dense_use and deactivated_count < dense_index_count:
-                if portage.dep.check_required_use(
+                )
+            ):
+                valid_use_flags_combinations.append(flags)
+                break  # early quit O(n!) loop
+
+    if add_dense_use:
+        for flags in yield_use_flags_toggles_sorted(iuse, True):
+            if (
+                flags not in valid_use_flags_combinations
+                and portage.dep.check_required_use(
                     " ".join(ruse), flags, iuse_match_always_true
-                ):
-                    dense_index_count = deactivated_count
-                    dense_index = index
-        if add_sparse_use and sparse_index != -1:
-            flags = get_use_flags_toggles(sparse_index, iuse)
-            if flags not in valid_use_flags_combinations:
+                )
+            ):
                 valid_use_flags_combinations.append(flags)
-        if add_dense_use and dense_index != -1:
-            flags = get_use_flags_toggles(dense_index, iuse)
-            if flags not in valid_use_flags_combinations:
-                valid_use_flags_combinations.append(flags)
+                break  # early quit O(n!) loop
 
     if max_use_combinations >= 0 and all_combinations_count > max_use_combinations:
         random.seed()
@@ -239,19 +261,23 @@ def get_use_combinations(
 
             flags = get_use_flags_toggles(index, iuse)
 
-            if portage.dep.check_required_use(
-                " ".join(ruse), flags, iuse_match_always_true
+            if (
+                flags not in valid_use_flags_combinations
+                and portage.dep.check_required_use(
+                    " ".join(ruse), flags, iuse_match_always_true
+                )
             ):
-                if flags not in valid_use_flags_combinations:
-                    valid_use_flags_combinations.append(flags)
+                valid_use_flags_combinations.append(flags)
     else:
         for index in range(0, all_combinations_count):
             flags = get_use_flags_toggles(index, iuse)
 
-            if portage.dep.check_required_use(
-                " ".join(ruse), flags, iuse_match_always_true
+            if (
+                flags not in valid_use_flags_combinations
+                and portage.dep.check_required_use(
+                    " ".join(ruse), flags, iuse_match_always_true
+                )
             ):
-                if flags not in valid_use_flags_combinations:
-                    valid_use_flags_combinations.append(flags)
+                valid_use_flags_combinations.append(flags)
 
     return valid_use_flags_combinations
