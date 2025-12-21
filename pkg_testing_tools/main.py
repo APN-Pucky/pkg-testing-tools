@@ -184,7 +184,7 @@ def process_args(sysargs):
         action="append",
         type=str,
         required=False,
-        help="Extra /etc/portage/env/ file name, to be used while testing packages. Can be passed multile times.",
+        help="Extra {prefix}/etc/portage/env/ file name, to be used while testing packages. Can be passed multile times.",
     )
 
     optional.add_argument(
