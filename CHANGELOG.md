@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Create missing directories under {prefix}/etc/portage if needed
 - `--prefix` default is no longer '', but autodetected prefix via `portageq envvar EPREFIX`.
 
 ## [0.2.8] - 2025-12-12
