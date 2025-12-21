@@ -4,7 +4,7 @@ import sys
 from tempfile import NamedTemporaryFile
 
 
-def get_etc_portage_tmp_file(directory_name, prefix):
+def get_etc_portage_tmp_file(directory_name: str, prefix: str):
     target_location = os.path.join(prefix + "/etc/portage", directory_name)
 
     if not os.path.isdir(target_location):
