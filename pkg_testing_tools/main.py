@@ -242,7 +242,7 @@ def process_args(sysargs):
                 .strip()
             )
             args.prefix = eprefix
-        except subprocess.CalledProcessError:
+        except (subprocess.CalledProcessError, FileNotFoundError, OSError):
             logging.critical("Could not autodetect prefix, please set it via --prefix.")
             sys.exit(1)
 
