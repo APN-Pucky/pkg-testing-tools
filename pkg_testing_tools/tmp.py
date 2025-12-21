@@ -20,7 +20,12 @@ def get_etc_portage_tmp_file(directory_name, prefix):
                         target_location
                     )
                 )
-                os.makedirs(target_location, exist_ok=True)
+                umask = os.umask(0)
+                try:
+                    os.makedirs(target_location, exist_ok=False, mode=0o755)
+                finally:
+                    os.umask(umask)
+                os.chmod(target_location, 0o755)
             except OSError as e:
                 logging.critical(
                     "Failed to create directory {}: {}".format(target_location, e)
@@ -33,6 +38,11 @@ def get_etc_portage_tmp_file(directory_name, prefix):
 
     umask = os.umask(0)
     os.umask(umask)
-    os.chmod(handler.name, 0o644 & ~umask)
+    try:
+        os.chmod(handler.name, 0o644 & ~umask)
+    except OSError as e:
+        logging.warning(
+            "Failed to set permissions on temporary file {}: {}".format(handler.name, e)
+        )
 
     return handler
