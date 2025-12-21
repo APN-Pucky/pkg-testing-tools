@@ -164,10 +164,10 @@ def process_args(sysargs):
     optional.add_argument(
         "--prefix",
         action="store",
-        default="",
+        default=None,
         type=str,
         required=False,
-        help="Set the prefix for the portage configuration files. Default: ''.",
+        help="Set the prefix for the portage configuration files. Default: autodetect.",
     )
 
     optional.add_argument(
@@ -184,7 +184,7 @@ def process_args(sysargs):
         action="append",
         type=str,
         required=False,
-        help="Extra /etc/portage/env/ file name, to be used while testing packages. Can be passed multile times.",
+        help="Extra {prefix}/etc/portage/env/ file name, to be used while testing packages. Can be passed multiple times.",
     )
 
     optional.add_argument(
@@ -230,6 +230,22 @@ def process_args(sysargs):
     logging.basicConfig(level=log_level, format="[%(levelname)s] >>> %(message)s")
 
     logging.debug("{}".format(args))
+
+    if args.prefix is None:
+        # portageq envvar EPREFIX gives prefix
+        try:
+            eprefix = (
+                subprocess.check_output(
+                    ["portageq", "envvar", "EPREFIX"], stderr=subprocess.DEVNULL
+                )
+                .decode("utf-8")
+                .strip()
+            )
+            args.prefix = eprefix
+        except (subprocess.CalledProcessError, FileNotFoundError, OSError):
+            logging.critical("Could not autodetect prefix, please set it via --prefix.")
+            sys.exit(1)
+
     return args, extra_args
 
 
