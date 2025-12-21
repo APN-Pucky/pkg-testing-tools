@@ -167,7 +167,7 @@ def process_args(sysargs):
         default=None,
         type=str,
         required=False,
-        help="Set the prefix for the portage configuration files. Default: autodetect prefix.",
+        help="Set the prefix for the portage configuration files. Default: autodetect.",
     )
 
     optional.add_argument(
