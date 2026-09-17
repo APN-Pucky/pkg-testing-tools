@@ -51,6 +51,19 @@ Local to package atom flags are sometimes not desired, especially when one flag 
 pkg-testing-tool --use-flags-scope global --package-atom '=dev-libs/boost-1.71.0'
 ```
 
+Testing a merge request on top of a live package ebuild can be done by passing the MR diff with `--patch`.
+```
+pkg-testing-tool \
+    -asu -adu \
+    --fail-fast \
+    --append-emerge "--autounmask=y --autounmask-write --autounmask-continue --autounmask-use=y --autounmask-backtrack=y" \
+    --test-feature-scope force \
+    --extra-env-file 'test.conf' \
+    --append-required-use '!python_targets_python3_10 !python_targets_python3_11 !python_targets_python3_12 !python_single_target_python3_10 !python_single_target_python3_11 !python_single_target_python3_12 !lua_single_target_lua5-3' \
+    -f hepmc-9999.ebuild \
+    --patch https://gitlab.cern.ch/hepmc/HepMC3/-/merge_requests/436.diff
+```
+
 ## Poetry development
 
 As root:
