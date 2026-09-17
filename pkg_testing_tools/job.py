@@ -12,7 +12,6 @@ from dataclasses import dataclass
 from tempfile import NamedTemporaryFile
 
 import portage
-from importlib_metadata import metadata
 
 from .use import atom_to_cpv, get_package_flags, get_use_combinations
 
