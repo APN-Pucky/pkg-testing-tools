@@ -13,17 +13,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        args: [
-          '-C -p "=pkg-testing-tools-9999" --pretend',
-          '-C -p "=pkg-testing-tools-9999"',
-          '-f sci/sci-physics/collier/collier-*.ebuild --append-emerge "--autounmask=y --autounmask-write --autounmask-continue --autounmask-use=y" --max-use-combinations 1',
-          '-p =pkg-testing-tools-9999',
+        include:
+          - args: '-C -p "=pkg-testing-tools-9999" --pretend'
+            use: ""
+          - args: '-C -p "=pkg-testing-tools-9999"'
+            use: ""
+          - args: '-f sci/sci-physics/collier/collier-*.ebuild --debug --append-emerge "--autounmask=y --autounmask-write --autounmask-continue --autounmask-use=y" --max-use-combinations 1'
+            use: ""
+          - args: '-p =pkg-testing-tools-9999'
+            use: ""
           # https://github.com/APN-Pucky/pkg-testing-tools/issues/28
-          "--test-feature-scope never --append-required-use '!pgo' --max-use-combinations 6 -p www-client/firefox --pretend",
-          "-tfs never --append-required-use '!pgo' -muc 6 -p www-client/firefox --pretend",
+          - args: "--test-feature-scope never --append-required-use '!pgo' --max-use-combinations 6 -p www-client/firefox --pretend"
+            use: ""
+          - args: "-tfs never --append-required-use '!pgo' -muc 6 -p www-client/firefox --pretend"
+            use: ""
           # https://bugs.gentoo.org/918693 an ebuild without -r0 but any other -rN
-          "-p '~sci-physics/lhapdf-6.5.4' --max-use-combinations 0",
-        ]
+          - args: "-p '~sci-physics/lhapdf-6.5.4' --max-use-combinations 0" 
+            use: "-python"
+
     steps:
     - run: emerge --sync
     - run: git clone --depth 1 https://github.com/gentoo/sci.git
@@ -38,4 +45,4 @@ jobs:
         fi
     - run: cat /var/db/repos/gentoo/app-portage/pkg-testing-tools/pkg-testing-tools-9999.ebuild
     - run: emerge =pkg-testing-tools-9999
-    - run: pkg-testing-tool ${{ matrix.args }}
+    - run: USE=${{ matrix.use }} pkg-testing-tool ${{ matrix.args }}

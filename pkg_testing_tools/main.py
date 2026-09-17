@@ -4,13 +4,30 @@ import argparse
 import json
 import logging
 import os
+import shutil
 import subprocess
 import sys
+import urllib.request
 from contextlib import ExitStack
+from urllib.parse import urlparse
 
-from .job import define_jobs
+from .job import define_jobs, get_package_metadata
 from .test import run_cmd, run_testing
 from .tmp import get_etc_portage_tmp_file
+
+
+def download_or_copy(src, dst):
+    if str(src).startswith(("http://", "https://")):
+        urllib.request.urlretrieve(src, dst)
+    else:
+        shutil.copyfile(src, dst)
+
+
+def patch_ref(value: str) -> str:
+    parsed = urlparse(value)
+    if parsed.scheme and parsed.scheme != "https":
+        raise argparse.ArgumentTypeError("patches must be paths or https:// URLs")
+    return value
 
 
 def process_args(sysargs):
@@ -85,6 +102,15 @@ def process_args(sysargs):
 
     optional.add_argument(
         "--ccache", action="store_true", required=False, help="Add ccache to FEATURES."
+    )
+
+    parser.add_argument(
+        "--patch",
+        action="append",
+        type=patch_ref,
+        default=[],
+        metavar="PATH_OR_HTTPS_URL",
+        help="Patch file path or https:// URL. Can be passed multiple times.",
     )
 
     optional.add_argument(
@@ -319,16 +345,29 @@ def pkg_testing_tool(args, extra_args):
             tmp_files[handler].flush()
 
         for atom in args.package_atom:
-            for new_job in define_jobs(atom, args):
+            m = get_package_metadata(atom)
+
+            # Download/Copy patches to Temporary directory
+            for patch in args.patch:
+                tmp_files[m.cpv + m.revision + patch] = stack.enter_context(
+                    get_etc_portage_tmp_file(
+                        "patches/{m.cpv}".format(m=m),
+                        prefix=args.prefix,
+                        suffix=".patch",
+                    )
+                )
+                download_or_copy(patch, tmp_files[m.cpv + m.revision + patch].name)
+
+            for new_job in define_jobs(m, args):
                 jobs.append(new_job)
 
-        padding = max(len(i["cpv"]) for i in jobs) + 3
+        padding = max(len(i["atom"]) for i in jobs) + 3
 
         logging.info("Following testing jobs will be executed:")
         for job in jobs:
             logging.info(
-                "{cpv:<{padding}} USE: {use_flags}{test_feature}".format(
-                    cpv=job["cpv"],
+                "{atom:<{padding}} USE: {use_flags}{test_feature}".format(
+                    atom=job["atom"],
                     use_flags=(
                         "<default flags>"
                         if not job["use_flags"]
@@ -349,10 +388,10 @@ def pkg_testing_tool(args, extra_args):
         for job in jobs:
             i += 1
             logging.info(
-                "Running ({i} of {max_i}) {cpv} with USE: {use_flags}{test_feature}".format(
+                "Running ({i} of {max_i}) {atom} with USE: {use_flags}{test_feature}".format(
                     i=i,
                     max_i=len(jobs),
-                    cpv=job["cpv"],
+                    atom=job["atom"],
                     use_flags=(
                         "<default flags>"
                         if not job["use_flags"]
@@ -378,7 +417,11 @@ def pkg_testing_tool(args, extra_args):
             report.write(json.dumps(results, indent=4, sort_keys=True))
 
     if len(failures) > 0:
-        logging.error("Not all runs were successful.")
+        logging.error(
+            "Not all runs were successful ({} failures in {}).".format(
+                len(failures), len(results)
+            )
+        )
         for entry in failures:
             logging.error(
                 "atom: {atom}, USE flags: '{use_flags}'".format(
@@ -387,7 +430,7 @@ def pkg_testing_tool(args, extra_args):
             )
         sys.exit(1)
     else:
-        logging.info("All good.")
+        logging.info("All good in {} runs.".format(len(results)))
 
 
 def run(sysargs):
