@@ -18,7 +18,7 @@ jobs:
             use: ""
           - args: '-C -p "=pkg-testing-tools-9999"'
             use: ""
-          - args: '-f sci/sci-physics/collier/collier-*.ebuild --append-emerge "--autounmask=y --autounmask-write --autounmask-continue --autounmask-use=y" --max-use-combinations 1'
+          - args: '-f sci/sci-physics/collier/collier-*.ebuild --debug --append-emerge "--autounmask=y --autounmask-write --autounmask-continue --autounmask-use=y" --max-use-combinations 1'
             use: ""
           - args: '-p =pkg-testing-tools-9999'
             use: ""
