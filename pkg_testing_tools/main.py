@@ -395,7 +395,11 @@ def pkg_testing_tool(args, extra_args):
             report.write(json.dumps(results, indent=4, sort_keys=True))
 
     if len(failures) > 0:
-        logging.error("Not all runs were successful.")
+        logging.error(
+            "Not all runs were successful ({} failures in {}).".format(
+                len(failures), len(results)
+            )
+        )
         for entry in failures:
             logging.error(
                 "atom: {atom}, USE flags: '{use_flags}'".format(
