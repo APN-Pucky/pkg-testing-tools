@@ -20,7 +20,7 @@ def download_or_copy(src, dst):
     if str(src).startswith(("http://", "https://")):
         urllib.request.urlretrieve(src, dst)
     else:
-        shutil.copy2(src, dst)
+        shutil.copyfile(src, dst)
 
 
 def patch_ref(value: str) -> str:
