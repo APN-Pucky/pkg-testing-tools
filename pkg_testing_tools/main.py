@@ -7,10 +7,18 @@ import os
 import subprocess
 import sys
 from contextlib import ExitStack
+from urllib.parse import urlparse
 
 from .job import define_jobs
 from .test import run_cmd, run_testing
 from .tmp import get_etc_portage_tmp_file
+
+
+def patch_ref(value: str) -> str:
+    parsed = urlparse(value)
+    if parsed.scheme and parsed.scheme != "https":
+        raise argparse.ArgumentTypeError("patches must be paths or https:// URLs")
+    return value
 
 
 def process_args(sysargs):
@@ -85,6 +93,15 @@ def process_args(sysargs):
 
     optional.add_argument(
         "--ccache", action="store_true", required=False, help="Add ccache to FEATURES."
+    )
+
+    parser.add_argument(
+        "--patches",
+        action="append",
+        type=patch_ref,
+        default=[],
+        metavar="PATH_OR_HTTPS_URL",
+        help="Patch file path or https:// URL. Can be passed multiple times.",
     )
 
     optional.add_argument(
