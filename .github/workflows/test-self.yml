@@ -22,7 +22,7 @@ jobs:
           "--test-feature-scope never --append-required-use '!pgo' --max-use-combinations 6 -p www-client/firefox --pretend",
           "-tfs never --append-required-use '!pgo' -muc 6 -p www-client/firefox --pretend",
           # https://bugs.gentoo.org/918693 an ebuild without -r0 but any other -rN
-          "-p '~sci-physics/lhapdf-6.5.4' --max-use-combinations 0",
+          "-p '~sci-physics/lhapdf-6.5.4' --max-use-combinations 0 --append-required-use '!python'",
         ]
     steps:
     - run: emerge --sync

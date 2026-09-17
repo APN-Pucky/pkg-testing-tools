@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `--patch PATH/URL` flag: to apply patches from a local path or URL before each test install
+
 ### Changed
 
 - Create missing directories under {prefix}/etc/portage if needed

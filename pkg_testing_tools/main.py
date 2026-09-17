@@ -96,7 +96,7 @@ def process_args(sysargs):
     )
 
     parser.add_argument(
-        "--patches",
+        "--patch",
         action="append",
         type=patch_ref,
         default=[],
