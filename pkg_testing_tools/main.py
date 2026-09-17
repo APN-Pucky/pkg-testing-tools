@@ -336,12 +336,17 @@ def pkg_testing_tool(args, extra_args):
 
         jobs = []
 
-        metadatas = [get_package_metadata(atom) for atom in args.package_atom]
-
-        for m in metadatas:
+        for atom in args.package_atom:
             # Unmask and keyword all the packages prior to testing them.
-            tmp_files["package.accept_keywords"].write("{m.atom} **\n".format(m=m))
-            tmp_files["package.unmask"].write("{m.atom}\n".format(m=m))
+            tmp_files["package.accept_keywords"].write("{atom} **\n".format(atomm=atom))
+            tmp_files["package.unmask"].write("{atom}\n".format(atom=atom))
+
+        for handler in tmp_files:
+            tmp_files[handler].flush()
+
+        for atom in args.package_atom:
+            m = get_package_metadata(atom)
+
             # Download/Copy patches to Temporary directory
             for patch in args.patch:
                 tmp_files[m.cpv + m.revision + patch] = stack.enter_context(
@@ -353,12 +358,6 @@ def pkg_testing_tool(args, extra_args):
                 )
                 download_or_copy(patch, tmp_files[m.cpv + m.revision + patch].name)
 
-        for handler in tmp_files:
-            tmp_files[handler].flush()
-
-        # Download and apply patches
-
-        for m in metadatas:
             for new_job in define_jobs(m, args):
                 jobs.append(new_job)
 
