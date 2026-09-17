@@ -4,14 +4,23 @@ import argparse
 import json
 import logging
 import os
+import shutil
 import subprocess
 import sys
+import urllib.request
 from contextlib import ExitStack
 from urllib.parse import urlparse
 
-from .job import define_jobs
+from .job import define_jobs, get_package_metadata
 from .test import run_cmd, run_testing
 from .tmp import get_etc_portage_tmp_file
+
+
+def download_or_copy(src, dst):
+    if str(src).startswith(("http://", "https://")):
+        urllib.request.urlretrieve(src, dst)
+    else:
+        shutil.copy2(src, dst)
 
 
 def patch_ref(value: str) -> str:
@@ -327,16 +336,26 @@ def pkg_testing_tool(args, extra_args):
 
         jobs = []
 
-        for atom in args.package_atom:
+        metadatas = [get_package_metadata(atom) for atom in args.package_atom]
+
+        for m in metadatas:
             # Unmask and keyword all the packages prior to testing them.
-            tmp_files["package.accept_keywords"].write("{atom} **\n".format(atom=atom))
-            tmp_files["package.unmask"].write("{atom}\n".format(atom=atom))
+            tmp_files["package.accept_keywords"].write("{m.atom} **\n".format(m=m))
+            tmp_files["package.unmask"].write("{m.atom}\n".format(m=m))
+            # Download/Copy patches to Temporary directory
+            for patch in args.patch:
+                tmp_files[m.cpv + m.revision + patch] = stack.enter_context(
+                    get_etc_portage_tmp_file("patches/{m.cpv}".format(m=m), args.prefix)
+                )
+                download_or_copy(patch, tmp_files[m.cpv + m.revision + patch].name)
 
         for handler in tmp_files:
             tmp_files[handler].flush()
 
-        for atom in args.package_atom:
-            for new_job in define_jobs(atom, args):
+        # Download and apply patches
+
+        for m in metadatas:
+            for new_job in define_jobs(m, args):
                 jobs.append(new_job)
 
         padding = max(len(i["atom"]) for i in jobs) + 3
@@ -408,7 +427,7 @@ def pkg_testing_tool(args, extra_args):
             )
         sys.exit(1)
     else:
-        logging.info("All good.")
+        logging.info("All good in {} runs.".format(len(results)))
 
 
 def run(sysargs):

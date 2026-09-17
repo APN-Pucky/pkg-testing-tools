@@ -7,6 +7,7 @@ import shlex
 import subprocess
 import sys
 from contextlib import ExitStack
+from dataclasses import dataclass
 from tempfile import NamedTemporaryFile
 
 import portage
@@ -14,7 +15,19 @@ import portage
 from .use import atom_to_cpv, get_package_flags, get_use_combinations
 
 
-def get_package_metadata(atom):
+@dataclass
+class PackageMetadata:
+    atom: str
+    cp: str
+    cpv: str
+    version: str
+    revision: str
+    has_tests: bool
+    iuse: list[str]
+    ruse: list[str]
+
+
+def get_package_metadata(atom: str) -> PackageMetadata:
     # This handles revisions properly, but not live ebuilds: https://bugs.gentoo.org/918693 https://github.com/APN-Pucky/pkg-testing-tools/issues/10
     cpv = atom_to_cpv(atom)
     # cpv is None on missing/masked packages
@@ -34,26 +47,27 @@ def get_package_metadata(atom):
 
     phases = portage.portdb.aux_get(cpv, ["DEFINED_PHASES"])[0].split()
 
-    return {
-        "atom": atom,
-        "cp": cp,
-        "cpv": cpv,
-        "version": version,
-        "revision": revision,
-        "has_tests": ("test" in phases),
-        "iuse": iuse,
-        "ruse": ruse,
-    }
+    return PackageMetadata(
+        atom=atom,
+        cp=cp,
+        cpv=cpv,
+        version=version,
+        revision=revision,
+        has_tests=("test" in phases),
+        iuse=iuse,
+        ruse=ruse,
+    )
 
 
-def define_jobs(atom, args):
+def define_jobs(input_metadata, args):
+    package_metadata = input_metadata.copy()
     jobs = []
 
-    package_metadata = get_package_metadata(atom)
+    atom = package_metadata.atom
 
     common = {
-        "atom": atom,
-        "cp": package_metadata["cp"],
+        "atom": package_metadata.atom,
+        "cp": package_metadata.cp,
         "extra_env_files": (
             " ".join(args.extra_env_file) if args.extra_env_file else []
         ),
@@ -63,12 +77,12 @@ def define_jobs(atom, args):
     logging.debug("package_metadata: {}".format(package_metadata))
 
     if args.append_required_use:
-        package_metadata["ruse"].append(args.append_required_use)
+        package_metadata.ruse.append(args.append_required_use)
 
-    if package_metadata["iuse"] and args.max_use_combinations != 0:
+    if package_metadata.iuse and args.max_use_combinations != 0:
         use_combinations = get_use_combinations(
-            package_metadata["iuse"],
-            package_metadata["ruse"],
+            package_metadata.iuse,
+            package_metadata.ruse,
             args.max_use_combinations,
             args.add_sparse_use,
             args.add_dense_use,
@@ -79,7 +93,7 @@ def define_jobs(atom, args):
         use_combinations = None
 
     if use_combinations:
-        if package_metadata["has_tests"] and args.test_feature_scope == "first":
+        if package_metadata.has_tests and args.test_feature_scope == "first":
             job = {}
             job.update(common)
             job.update(
@@ -97,7 +111,7 @@ def define_jobs(atom, args):
             job.update(
                 {
                     "test_feature_toggle": (
-                        package_metadata["has_tests"]
+                        package_metadata.has_tests
                         and args.test_feature_scope == "always"
                     )
                     or args.test_feature_scope == "force",
@@ -107,7 +121,7 @@ def define_jobs(atom, args):
             )
             jobs.append(job)
 
-        if package_metadata["has_tests"] and args.test_feature_scope == "once":
+        if package_metadata.has_tests and args.test_feature_scope == "once":
             job = {}
             job.update(common)
             job.update(
@@ -119,7 +133,7 @@ def define_jobs(atom, args):
             )
             jobs.append(job)
     else:
-        if not package_metadata["has_tests"] or args.test_feature_scope == "never":
+        if not package_metadata.has_tests or args.test_feature_scope == "never":
             job = {}
             job.update(common)
             job.update(
