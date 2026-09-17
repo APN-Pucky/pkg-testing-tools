@@ -7,10 +7,12 @@ import shlex
 import subprocess
 import sys
 from contextlib import ExitStack
+from copy import deepcopy
 from dataclasses import dataclass
 from tempfile import NamedTemporaryFile
 
 import portage
+from importlib_metadata import metadata
 
 from .use import atom_to_cpv, get_package_flags, get_use_combinations
 
@@ -60,7 +62,7 @@ def get_package_metadata(atom: str) -> PackageMetadata:
 
 
 def define_jobs(input_metadata, args):
-    package_metadata = input_metadata.copy()
+    package_metadata = deepcopy(input_metadata)
     jobs = []
 
     atom = package_metadata.atom
