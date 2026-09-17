@@ -339,13 +339,13 @@ def pkg_testing_tool(args, extra_args):
             for new_job in define_jobs(atom, args):
                 jobs.append(new_job)
 
-        padding = max(len(i["cpv"]) for i in jobs) + 3
+        padding = max(len(i["atom"]) for i in jobs) + 3
 
         logging.info("Following testing jobs will be executed:")
         for job in jobs:
             logging.info(
-                "{cpv:<{padding}} USE: {use_flags}{test_feature}".format(
-                    cpv=job["cpv"],
+                "{atom:<{padding}} USE: {use_flags}{test_feature}".format(
+                    atom=job["atom"],
                     use_flags=(
                         "<default flags>"
                         if not job["use_flags"]
@@ -366,10 +366,10 @@ def pkg_testing_tool(args, extra_args):
         for job in jobs:
             i += 1
             logging.info(
-                "Running ({i} of {max_i}) {cpv} with USE: {use_flags}{test_feature}".format(
+                "Running ({i} of {max_i}) {atom} with USE: {use_flags}{test_feature}".format(
                     i=i,
                     max_i=len(jobs),
-                    cpv=job["cpv"],
+                    atom=job["atom"],
                     use_flags=(
                         "<default flags>"
                         if not job["use_flags"]

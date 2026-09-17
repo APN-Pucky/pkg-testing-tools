@@ -52,7 +52,7 @@ def define_jobs(atom, args):
     package_metadata = get_package_metadata(atom)
 
     common = {
-        "cpv": atom,
+        "atom": atom,
         "cp": package_metadata["cp"],
         "extra_env_files": (
             " ".join(args.extra_env_file) if args.extra_env_file else []

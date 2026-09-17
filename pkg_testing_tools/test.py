@@ -76,7 +76,7 @@ def run_testing(job, args):
 
         global_features.append("ccache")
 
-    emerge_cmdline.append(job["cpv"])
+    emerge_cmdline.append(job["atom"])
 
     with ExitStack() as stack:
         tmp_files = {}
@@ -109,7 +109,7 @@ def run_testing(job, args):
             tmp_files["package.use"].write(
                 "{prefix} {flags}\n".format(
                     prefix=(
-                        "*/*" if job["use_flags_scope"] == "global" else job["cpv"]
+                        "*/*" if job["use_flags_scope"] == "global" else job["atom"]
                     ),
                     flags=" ".join(job["use_flags"]),
                 )
@@ -149,7 +149,7 @@ def run_testing(job, args):
         "emerge_default_opts": portage.settings.get("EMERGE_DEFAULT_OPTS"),
         "emerge_cmdline": " ".join(emerge_cmdline),
         "test_feature_toggle": job["test_feature_toggle"],
-        "atom": job["cpv"],
+        "atom": job["atom"],
         "time": {
             "started": time_started,
             "finished": datetime.datetime.now().replace(microsecond=0).isoformat(),
