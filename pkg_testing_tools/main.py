@@ -338,7 +338,7 @@ def pkg_testing_tool(args, extra_args):
 
         for atom in args.package_atom:
             # Unmask and keyword all the packages prior to testing them.
-            tmp_files["package.accept_keywords"].write("{atom} **\n".format(atomm=atom))
+            tmp_files["package.accept_keywords"].write("{atom} **\n".format(atom=atom))
             tmp_files["package.unmask"].write("{atom}\n".format(atom=atom))
 
         for handler in tmp_files:
