@@ -345,7 +345,11 @@ def pkg_testing_tool(args, extra_args):
             # Download/Copy patches to Temporary directory
             for patch in args.patch:
                 tmp_files[m.cpv + m.revision + patch] = stack.enter_context(
-                    get_etc_portage_tmp_file("patches/{m.cpv}".format(m=m), args.prefix)
+                    get_etc_portage_tmp_file(
+                        "patches/{m.cpv}".format(m=m),
+                        prefix=args.prefix,
+                        suffix=".patch",
+                    )
                 )
                 download_or_copy(patch, tmp_files[m.cpv + m.revision + patch].name)
 

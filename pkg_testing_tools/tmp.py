@@ -2,9 +2,12 @@ import logging
 import os
 import sys
 from tempfile import NamedTemporaryFile
+from typing import Optional
 
 
-def get_etc_portage_tmp_file(directory_name: str, prefix: str):
+def get_etc_portage_tmp_file(
+    directory_name: str, prefix: str, suffix: Optional[str] = None
+):
     target_location = os.path.join(prefix + "/etc/portage", directory_name)
 
     if not os.path.isdir(target_location):
@@ -33,7 +36,7 @@ def get_etc_portage_tmp_file(directory_name: str, prefix: str):
                 sys.exit(1)
 
     handler = NamedTemporaryFile(
-        mode="w", prefix="zzz_pkg_testing_tool_", dir=target_location
+        mode="w", prefix="zzz_pkg_testing_tool_", dir=target_location, suffix=suffix
     )
 
     umask = os.umask(0)
