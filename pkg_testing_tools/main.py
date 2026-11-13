@@ -30,6 +30,12 @@ def patch_ref(value: str) -> str:
     return value
 
 
+def existing_file(value: str) -> str:
+    if not os.path.isfile(value):
+        raise argparse.ArgumentTypeError(f"{value!r} is not an existing file")
+    return value
+
+
 def process_args(sysargs):
     parser = argparse.ArgumentParser()
 
@@ -48,6 +54,7 @@ def process_args(sysargs):
         "-f",
         "--file",
         action="append",
+        type=existing_file,
         default=[],
         help="Portage ebuild file like 'foo-1.2.3.ebuild'. Must reside in a repository.",
     )
